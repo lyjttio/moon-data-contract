@@ -1,0 +1,7 @@
+// import {
+//   "lyjttio/moon-data-contract" @lib,
+// }
+
+options(
+  "is-main": true,
+)
