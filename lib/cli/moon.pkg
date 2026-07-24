@@ -1,0 +1,8 @@
+import {
+  "lyjttio/moon-data-contract/lib/types" @types,
+  "lyjttio/moon-data-contract/lib/generators" @generators,
+}
+
+options(
+  "is-main": false,
+)
