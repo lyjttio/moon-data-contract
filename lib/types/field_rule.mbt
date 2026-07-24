@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Field Rules & Metadata System
 
+///|
 pub(all) enum RuleSeverity {
   SeverityInfo
   SeverityWarning
@@ -7,6 +8,7 @@ pub(all) enum RuleSeverity {
   SeverityCritical
 } derive(Debug, Eq)
 
+///|
 pub(all) struct FieldRule {
   rule_id : String
   target_field : String
@@ -15,16 +17,18 @@ pub(all) struct FieldRule {
   enabled : Bool
 } derive(Debug, Eq)
 
+///|
 pub fn FieldRule::new(
   rule_id : String,
   target_field : String,
-  severity~ : RuleSeverity = SeverityError,
-  rule_description~ : String = "",
-  enabled~ : Bool = true
+  severity? : RuleSeverity = SeverityError,
+  rule_description? : String = "",
+  enabled? : Bool = true,
 ) -> FieldRule {
   { rule_id, target_field, severity, rule_description, enabled }
 }
 
+///|
 pub(all) struct ContractPolicy {
   policy_id : String
   name : String
@@ -33,6 +37,7 @@ pub(all) struct ContractPolicy {
   strict_null_check : Bool
 } derive(Debug, Eq)
 
+///|
 pub fn ContractPolicy::default() -> ContractPolicy {
   {
     policy_id: "default_policy",

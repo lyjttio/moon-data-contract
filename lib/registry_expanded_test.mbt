@@ -1,3 +1,4 @@
+///|
 test "dependency_graph: cycle detection" {
   let graph = DependencyGraph::new()
   graph.add_node("OrderService", ["PaymentService", "UserService"])
@@ -11,6 +12,7 @@ test "dependency_graph: cycle detection" {
   assert_true(graph.has_cycle())
 }
 
+///|
 test "file_storage: filepath generation" {
   let cfg = FileStoreConfig::new("/var/schemas")
   let path = get_schema_filepath(cfg, "user_event", "1.0.0")

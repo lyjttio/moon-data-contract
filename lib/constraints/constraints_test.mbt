@@ -1,3 +1,4 @@
+///|
 test "constraints: numeric range checks" {
   let rule = @types.NumericRange::{
     min_value: Some(10.0),
@@ -17,6 +18,7 @@ test "constraints: numeric range checks" {
   assert_true(v3.length() > 0) // Not multiple of 5
 }
 
+///|
 test "constraints: string format checks (email, uuid, ipv4)" {
   assert_true(is_valid_email("alice@example.com"))
   assert_false(is_valid_email("invalid_email_str"))

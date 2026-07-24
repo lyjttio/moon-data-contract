@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Advanced Type System Definitions
 
+///|
 pub(all) enum PrimitiveKind {
   PBool
   PInt
@@ -10,6 +11,7 @@ pub(all) enum PrimitiveKind {
   PTimestamp
 } derive(Debug, Eq)
 
+///|
 pub fn PrimitiveKind::to_string(self : PrimitiveKind) -> String {
   match self {
     PBool => "bool"
@@ -22,6 +24,7 @@ pub fn PrimitiveKind::to_string(self : PrimitiveKind) -> String {
   }
 }
 
+///|
 pub fn PrimitiveKind::from_string(s : String) -> PrimitiveKind {
   match s {
     "bool" | "boolean" => PBool
@@ -35,6 +38,7 @@ pub fn PrimitiveKind::from_string(s : String) -> PrimitiveKind {
   }
 }
 
+///|
 pub(all) enum DataType {
   Primitive(PrimitiveKind)
   EnumDef(String, Array[String])
@@ -45,6 +49,7 @@ pub(all) enum DataType {
   UnionDef(Array[DataType])
 } derive(Debug, Eq)
 
+///|
 pub fn DataType::to_string(self : DataType) -> String {
   match self {
     Primitive(kind) => kind.to_string()
@@ -75,6 +80,7 @@ pub fn DataType::to_string(self : DataType) -> String {
   }
 }
 
+///|
 pub(all) struct NumericRange {
   min_value : Double?
   max_value : Double?
@@ -83,6 +89,7 @@ pub(all) struct NumericRange {
   multiple_of : Double?
 } derive(Debug, Eq)
 
+///|
 pub fn NumericRange::default() -> NumericRange {
   {
     min_value: None,
@@ -93,6 +100,7 @@ pub fn NumericRange::default() -> NumericRange {
   }
 }
 
+///|
 pub(all) struct StringRule {
   min_length : Int?
   max_length : Int?
@@ -100,15 +108,12 @@ pub(all) struct StringRule {
   format_kind : String?
 } derive(Debug, Eq)
 
+///|
 pub fn StringRule::default() -> StringRule {
-  {
-    min_length: None,
-    max_length: None,
-    pattern: None,
-    format_kind: None,
-  }
+  { min_length: None, max_length: None, pattern: None, format_kind: None }
 }
 
+///|
 pub(all) struct FieldConstraint {
   numeric : NumericRange
   string_rule : StringRule
@@ -116,6 +121,7 @@ pub(all) struct FieldConstraint {
   default_value_raw : String?
 } derive(Debug, Eq)
 
+///|
 pub fn FieldConstraint::default() -> FieldConstraint {
   {
     numeric: NumericRange::default(),
@@ -125,6 +131,7 @@ pub fn FieldConstraint::default() -> FieldConstraint {
   }
 }
 
+///|
 pub(all) struct Field {
   id : Int
   name : String
@@ -136,15 +143,16 @@ pub(all) struct Field {
   constraint : FieldConstraint
 } derive(Debug, Eq)
 
+///|
 pub fn Field::new(
   id : Int,
   name : String,
   field_type : DataType,
-  required~ : Bool = true,
-  primary_key~ : Bool = false,
-  deprecated~ : Bool = false,
-  description~ : String = "",
-  constraint~ : FieldConstraint = FieldConstraint::default()
+  required? : Bool = true,
+  primary_key? : Bool = false,
+  deprecated? : Bool = false,
+  description? : String = "",
+  constraint? : FieldConstraint = FieldConstraint::default(),
 ) -> Field {
   {
     id,
@@ -158,6 +166,7 @@ pub fn Field::new(
   }
 }
 
+///|
 pub(all) struct SchemaHeader {
   id : String
   name : String
@@ -168,26 +177,29 @@ pub(all) struct SchemaHeader {
   tags : Map[String, String]
 } derive(Debug, Eq)
 
+///|
 pub fn SchemaHeader::new(
   id : String,
   name : String,
   version : String,
-  space_name~ : String = "default",
-  owner~ : String = "data_eng",
-  doc~ : String = "",
-  tags~ : Map[String, String] = Map([])
+  space_name? : String = "default",
+  owner? : String = "data_eng",
+  doc? : String = "",
+  tags? : Map[String, String] = Map([]),
 ) -> SchemaHeader {
   { id, name, space_name, version, owner, doc, tags }
 }
 
+///|
 pub(all) struct ContractSchema {
   header : SchemaHeader
   fields : Array[Field]
 } derive(Debug, Eq)
 
+///|
 pub fn ContractSchema::new(
   header : SchemaHeader,
-  fields : Array[Field]
+  fields : Array[Field],
 ) -> ContractSchema {
   { header, fields }
 }

@@ -1,23 +1,22 @@
 // MoonBit Data Contract - Strict Mode Data Contract Validator
 
+///|
 pub(all) struct ValidationOptions {
   allow_extra_fields : Bool
   enable_coercion : Bool
   strict_enums : Bool
 } derive(Debug, Eq)
 
+///|
 pub fn ValidationOptions::default() -> ValidationOptions {
-  {
-    allow_extra_fields: false,
-    enable_coercion: false,
-    strict_enums: true,
-  }
+  { allow_extra_fields: false, enable_coercion: false, strict_enums: true }
 }
 
+///|
 pub fn validate_payload_with_options(
   schema : Schema,
   payload : Map[String, FieldValue],
-  options~ : ValidationOptions = ValidationOptions::default()
+  options? : ValidationOptions = ValidationOptions::default(),
 ) -> ValidationResult {
   let errors : Array[ValidationError] = []
 
@@ -27,7 +26,7 @@ pub fn validate_payload_with_options(
     let val_opt = payload.get(field.name)
 
     match val_opt {
-      None | Some(VNull) => {
+      None | Some(VNull) =>
         if field.required {
           errors.push({
             field: field.name,
@@ -35,7 +34,6 @@ pub fn validate_payload_with_options(
             code: "REQUIRED_FIELD_MISSING",
           })
         }
-      }
       Some(val) => {
         let final_val = if options.enable_coercion {
           match coerce_value_to_type(val, field.field_type) {

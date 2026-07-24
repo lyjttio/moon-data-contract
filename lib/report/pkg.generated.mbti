@@ -1,0 +1,36 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moon-data-contract/lib/report"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn export_html_report(String, String, String, String, Bool, Int, Int, Array[EvolutionDetail]) -> String
+
+pub fn export_junit_xml(String, Bool, Int, Array[EvolutionDetail]) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct ContractReport {
+  schema_id : String
+  base_version : String
+  target_version : String
+  level_name : String
+  is_compatible : Bool
+  details : Array[EvolutionDetail]
+} derive(Eq, @debug.Debug)
+pub fn ContractReport::to_markdown(Self) -> String
+
+pub(all) struct EvolutionDetail {
+  field_name : String
+  change_type : String
+  is_breaking : Bool
+  description : String
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+

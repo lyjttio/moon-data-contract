@@ -1,0 +1,42 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moon-data-contract/lib/constraints"
+
+import {
+  "lyjttio/moon-data-contract/lib/types",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn check_array_rule(String, Array[String], ArrayRule) -> Array[ConstraintViolation]
+
+pub fn check_numeric_range(String, Double, @types.NumericRange) -> Array[ConstraintViolation]
+
+pub fn check_string_rule(String, String, @types.StringRule) -> Array[ConstraintViolation]
+
+pub fn is_valid_email(String) -> Bool
+
+pub fn is_valid_ipv4(String) -> Bool
+
+pub fn is_valid_uuid(String) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) struct ArrayRule {
+  min_items : Int?
+  max_items : Int?
+  unique_items : Bool
+} derive(Eq, @debug.Debug)
+pub fn ArrayRule::default() -> Self
+
+pub(all) struct ConstraintViolation {
+  field_name : String
+  code : String
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn ConstraintViolation::new(String, String, String) -> Self
+
+// Type aliases
+
+// Traits
+

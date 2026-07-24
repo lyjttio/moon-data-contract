@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Pretty Printer for Schema Specifications
 
+///|
 pub fn print_contract_spec(schema : Schema) -> String {
   let mut spec = "contract " + schema.name + " {\n"
   spec = spec + "  id: \"" + schema.id + "\"\n"
@@ -11,7 +12,16 @@ pub fn print_contract_spec(schema : Schema) -> String {
     let f = schema.fields[i]
     let req_str = if f.required { "required" } else { "optional" }
     let pk_str = if f.primary_key { " [primary_key]" } else { "" }
-    spec = spec + "    " + f.name + ": " + f.field_type.to_string() + " (" + req_str + ")" + pk_str + ";\n"
+    spec = spec +
+      "    " +
+      f.name +
+      ": " +
+      f.field_type.to_string() +
+      " (" +
+      req_str +
+      ")" +
+      pk_str +
+      ";\n"
   }
 
   spec = spec + "  }\n"

@@ -1,0 +1,135 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moon-data-contract/lib/types"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn is_data_type_compatible(DataType, DataType) -> Bool
+
+pub fn is_type_widenable(PrimitiveKind, PrimitiveKind) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) struct ContractPolicy {
+  policy_id : String
+  name : String
+  rules : Array[FieldRule]
+  allow_unknown_fields : Bool
+  strict_null_check : Bool
+} derive(Eq, @debug.Debug)
+pub fn ContractPolicy::default() -> Self
+
+pub(all) struct ContractSchema {
+  header : SchemaHeader
+  fields : Array[Field]
+} derive(Eq, @debug.Debug)
+pub fn ContractSchema::new(SchemaHeader, Array[Field]) -> Self
+
+pub(all) enum DataType {
+  Primitive(PrimitiveKind)
+  EnumDef(String, Array[String])
+  ArrayDef(DataType)
+  MapDef(DataType, DataType)
+  OptionalDef(DataType)
+  StructDef(String, Array[Field])
+  UnionDef(Array[DataType])
+} derive(Eq, @debug.Debug)
+pub fn DataType::to_string(Self) -> String
+
+pub(all) struct Field {
+  id : Int
+  name : String
+  field_type : DataType
+  required : Bool
+  primary_key : Bool
+  deprecated : Bool
+  description : String
+  constraint : FieldConstraint
+} derive(Eq, @debug.Debug)
+pub fn Field::new(Int, String, DataType, required? : Bool, primary_key? : Bool, deprecated? : Bool, description? : String, constraint? : FieldConstraint) -> Self
+
+pub(all) struct FieldConstraint {
+  numeric : NumericRange
+  string_rule : StringRule
+  allowed_enums : Array[String]?
+  default_value_raw : String?
+} derive(Eq, @debug.Debug)
+pub fn FieldConstraint::default() -> Self
+
+pub(all) struct FieldRule {
+  rule_id : String
+  target_field : String
+  severity : RuleSeverity
+  rule_description : String
+  enabled : Bool
+} derive(Eq, @debug.Debug)
+pub fn FieldRule::new(String, String, severity? : RuleSeverity, rule_description? : String, enabled? : Bool) -> Self
+
+pub(all) struct NumericRange {
+  min_value : Double?
+  max_value : Double?
+  exclusive_min : Bool
+  exclusive_max : Bool
+  multiple_of : Double?
+} derive(Eq, @debug.Debug)
+pub fn NumericRange::default() -> Self
+
+pub(all) enum PrimitiveKind {
+  PBool
+  PInt
+  PInt64
+  PDouble
+  PString
+  PBytes
+  PTimestamp
+} derive(Eq, @debug.Debug)
+pub fn PrimitiveKind::from_string(String) -> Self
+pub fn PrimitiveKind::to_string(Self) -> String
+
+pub(all) enum RuleSeverity {
+  SeverityInfo
+  SeverityWarning
+  SeverityError
+  SeverityCritical
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SchemaHeader {
+  id : String
+  name : String
+  space_name : String
+  version : String
+  owner : String
+  doc : String
+  tags : Map[String, String]
+} derive(Eq, @debug.Debug)
+pub fn SchemaHeader::new(String, String, String, space_name? : String, owner? : String, doc? : String, tags? : Map[String, String]) -> Self
+
+pub(all) struct SemVer {
+  major : Int
+  minor : Int
+  patch : Int
+  prerelease : String?
+} derive(Eq, @debug.Debug)
+pub fn SemVer::bump_major(Self) -> Self
+pub fn SemVer::bump_minor(Self) -> Self
+pub fn SemVer::bump_patch(Self) -> Self
+pub fn SemVer::compare(Self, Self) -> Int
+pub fn SemVer::new(Int, Int, Int, prerelease? : String?) -> Self
+pub fn SemVer::parse(String) -> Self?
+pub fn SemVer::to_string(Self) -> String
+
+pub(all) struct StringRule {
+  min_length : Int?
+  max_length : Int?
+  pattern : String?
+  format_kind : String?
+} derive(Eq, @debug.Debug)
+pub fn StringRule::default() -> Self
+
+// Type aliases
+
+// Traits
+

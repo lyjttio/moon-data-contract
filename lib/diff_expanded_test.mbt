@@ -1,3 +1,4 @@
+///|
 test "ast_diff: enum variants addition and removal" {
   let e1 = DataType::EnumDef(["ACTIVE", "INACTIVE"])
   let e2 = DataType::EnumDef(["ACTIVE", "ARCHIVED"])

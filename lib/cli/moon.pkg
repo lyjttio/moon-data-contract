@@ -1,6 +1,6 @@
 import {
-  "lyjttio/moon-data-contract/lib/types" @types,
-  "lyjttio/moon-data-contract/lib/generators" @generators,
+  "lyjttio/moon-data-contract/lib/types",
+  "lyjttio/moon-data-contract/lib/generators",
 }
 
 options(

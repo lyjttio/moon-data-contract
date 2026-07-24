@@ -1,3 +1,4 @@
+///|
 test "report: markdown report formatting" {
   let detail1 = EvolutionDetail::{
     field_name: "email",

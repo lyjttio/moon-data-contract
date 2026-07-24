@@ -2,23 +2,134 @@
 package "lyjttio/moon-data-contract/lib"
 
 import {
+  "lyjttio/moon-data-contract/lib/types",
   "moonbitlang/core/debug",
 }
 
 // Values
+pub fn apply_patch_to_schema(Schema, SchemaPatch) -> Schema
+
+pub fn batch_compare_schemas(Array[Schema], Array[Schema]) -> Array[BatchCompareResult]
+
+pub fn build_changelog(String, String, String, Array[DiffEntry]) -> MigrationChangelog
+
+pub fn build_migration_matrix(Array[Schema], CompatibilityLevel) -> MigrationMatrix
+
+pub fn calculate_total_risk_score(Array[AstDiffNode]) -> Int
+
+pub fn calculate_version_bump(Array[AstDiffNode]) -> RecommendedBump
+
 pub fn check_compatibility(Schema, Schema, CompatibilityLevel) -> EvolutionReport
+
+pub fn check_enum_shrinking(String, Array[String], Array[String]) -> Array[BreakingRuleViolation]
+
+pub fn check_transitive_compatibility(Array[Schema], CompatibilityLevel) -> ChainCompatResult
+
+pub fn classify_breaking_change(String, @types.DataType, @types.DataType) -> BreakingRuleViolation?
+
+pub fn classify_field_pii(String) -> DataGovernanceTag
+
+pub fn clean_expired_versions(Array[Schema], RetentionPolicy) -> Array[Schema]
+
+pub fn coerce_value_to_type(FieldValue, DataType) -> FieldValue?
+
+pub fn count_total_ast_nodes(ContractAstNode) -> Int
+
+pub fn diff_data_types(String, DataType, DataType) -> Array[AstDiffNode]
 
 pub fn diff_schemas(Schema, Schema) -> Array[DiffEntry]
 
+pub fn evaluate_expression_rule(ExpressionRule, Map[String, FieldValue]) -> Array[ValidationError]
+
+pub fn filter_matching_schemas(Array[Schema], VersionRange) -> Array[Schema]
+
 pub fn find_field_by_name(Array[Field], String) -> Field?
 
+pub fn generate_sample_field_value(Field, Int) -> FieldValue
+
+pub fn generate_sample_payload(Schema, Int) -> Map[String, FieldValue]
+
+pub fn get_schema_filepath(FileStoreConfig, String, String) -> String
+
+pub fn is_version_in_range(@types.SemVer, VersionRange) -> Bool
+
+pub fn lint_contract_schema(Schema) -> Array[LintIssue]
+
+pub fn print_contract_spec(Schema) -> String
+
+pub fn tokenize_expression(String) -> Array[TokenType]
+
 pub fn validate_field_value(Field, FieldValue?) -> Array[ValidationError]
+
+pub fn validate_nested_struct(String, Array[Field], Map[String, FieldValue]) -> Array[ValidationError]
+
+pub fn validate_payload_with_options(Schema, Map[String, FieldValue], options? : ValidationOptions) -> ValidationResult
 
 pub fn validate_schema_payload(Schema, Map[String, FieldValue]) -> ValidationResult
 
 // Errors
 
 // Types and methods
+pub(all) enum AstChangeType {
+  AstFieldAdded
+  AstFieldRemoved
+  AstFieldTypeModified
+  AstFieldConstraintModified
+  AstEnumVariantAdded
+  AstEnumVariantRemoved
+  AstUnionVariantAdded
+  AstUnionVariantRemoved
+  AstMetadataChanged
+} derive(Eq, @debug.Debug)
+
+pub(all) struct AstDiffNode {
+  path : String
+  change_type : AstChangeType
+  old_value : String?
+  new_value : String?
+  is_breaking : Bool
+  risk_score : Int
+} derive(Eq, @debug.Debug)
+pub fn AstDiffNode::new(String, AstChangeType, old_value? : String?, new_value? : String?, is_breaking? : Bool, risk_score? : Int) -> Self
+
+pub(all) enum AstNodeType {
+  NodeSchema
+  NodeHeader
+  NodeField
+  NodeConstraint
+} derive(Eq, @debug.Debug)
+
+pub(all) struct BatchCompareResult {
+  subject_a : String
+  subject_b : String
+  is_identical : Bool
+  diff_count : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) enum BreakingCategory {
+  CategoryFieldDeletion
+  CategoryTypeIncompatibility
+  CategoryConstraintTightened
+  CategoryRequiredFieldAdded
+  CategoryEnumVariantRemoved
+  CategoryPrimaryKeyModified
+} derive(Eq, @debug.Debug)
+
+pub(all) struct BreakingRuleViolation {
+  rule_code : String
+  category : BreakingCategory
+  field_name : String
+  reason : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ChainCompatResult {
+  schema_id : String
+  version_chain : Array[String]
+  overall_compatible : Bool
+  failed_step : String?
+  total_breaking : Int
+} derive(Eq, @debug.Debug)
+
 pub(all) enum ChangeKind {
   FieldAdded(Field)
   FieldRemoved(Field)
@@ -36,6 +147,20 @@ pub(all) enum CompatibilityLevel {
 pub fn CompatibilityLevel::from_string(String) -> Self
 pub fn CompatibilityLevel::to_string(Self) -> String
 
+pub(all) struct ContractAstNode {
+  node_type : AstNodeType
+  name : String
+  children : Array[ContractAstNode]
+} derive(Eq, @debug.Debug)
+pub fn ContractAstNode::new(AstNodeType, String, children? : Array[Self]) -> Self
+
+pub(all) struct DataGovernanceTag {
+  category : PiiCategory
+  is_sensitive : Bool
+  retention_days : Int
+} derive(Eq, @debug.Debug)
+pub fn DataGovernanceTag::default() -> Self
+
 pub(all) enum DataType {
   Primitive(PrimitiveType)
   EnumDef(Array[String])
@@ -45,6 +170,18 @@ pub(all) enum DataType {
 } derive(Eq, @debug.Debug)
 pub fn DataType::from_string(String) -> Self
 pub fn DataType::to_string(Self) -> String
+
+pub(all) struct DependencyGraph {
+  nodes : Map[String, DependencyNode]
+} derive(Eq, @debug.Debug)
+pub fn DependencyGraph::add_node(Self, String, Array[String]) -> Unit
+pub fn DependencyGraph::has_cycle(Self) -> Bool
+pub fn DependencyGraph::new() -> Self
+
+pub(all) struct DependencyNode {
+  schema_id : String
+  dependencies : Array[String]
+} derive(Eq, @debug.Debug)
 
 pub(all) struct DiffEntry {
   field_name : String
@@ -65,6 +202,13 @@ pub(all) struct EvolutionReport {
 } derive(Eq, @debug.Debug)
 pub fn EvolutionReport::to_json_summary(Self) -> String
 pub fn EvolutionReport::to_markdown(Self) -> String
+
+pub(all) struct ExpressionRule {
+  rule_id : String
+  expression : String
+  error_message : String
+} derive(Eq, @debug.Debug)
+pub fn ExpressionRule::new(String, String, String) -> Self
 
 pub(all) struct Field {
   name : String
@@ -92,9 +236,58 @@ pub(all) enum FieldValue {
   VNull
 } derive(Eq, @debug.Debug)
 
+pub(all) struct FileStoreConfig {
+  base_dir : String
+  auto_create : Bool
+} derive(Eq, @debug.Debug)
+pub fn FileStoreConfig::new(String) -> Self
+
 pub(all) enum ImpactLevel {
   NonBreaking
   Breaking
+} derive(Eq, @debug.Debug)
+
+pub(all) struct LintIssue {
+  field_name : String
+  rule_id : String
+  severity : LintSeverity
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum LintSeverity {
+  LintWarning
+  LintError
+} derive(Eq, @debug.Debug)
+
+pub(all) struct MatrixCell {
+  from_version : String
+  to_version : String
+  is_compatible : Bool
+  breaking_count : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct MigrationChangelog {
+  schema_id : String
+  from_version : String
+  to_version : String
+  breaking_notes : Array[String]
+  non_breaking_notes : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn MigrationChangelog::to_markdown(Self) -> String
+
+pub(all) struct MigrationMatrix {
+  schema_id : String
+  versions : Array[String]
+  cells : Array[MatrixCell]
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PiiCategory {
+  PiiNone
+  PiiPersonalName
+  PiiEmail
+  PiiPhoneNumber
+  PiiNationalId
+  PiiCreditCard
 } derive(Eq, @debug.Debug)
 
 pub(all) enum PrimitiveType {
@@ -103,6 +296,19 @@ pub(all) enum PrimitiveType {
   TDouble
   TString
 } derive(Eq, @debug.Debug)
+
+pub(all) enum RecommendedBump {
+  BumpMajor
+  BumpMinor
+  BumpPatch
+  BumpNone
+} derive(Eq, @debug.Debug)
+
+pub(all) struct RetentionPolicy {
+  max_versions_to_keep : Int
+  keep_first_version : Bool
+} derive(Eq, @debug.Debug)
+pub fn RetentionPolicy::default() -> Self
 
 pub(all) struct Schema {
   id : String
@@ -114,6 +320,19 @@ pub(all) struct Schema {
 pub fn Schema::new(String, String, String, String, Array[Field]) -> Self
 pub fn Schema::to_json_string(Self) -> String
 
+pub(all) struct SchemaPatch {
+  target_schema_id : String
+  target_version : String
+  operations : Array[SchemaPatchOp]
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SchemaPatchOp {
+  OpAddField(Field)
+  OpRemoveField(String)
+  OpUpdateFieldType(String, DataType)
+  OpUpdateFieldRequired(String, Bool)
+} derive(Eq, @debug.Debug)
+
 pub(all) struct SchemaRegistry {
   schemas : Map[String, Array[Schema]]
   default_level : CompatibilityLevel
@@ -124,11 +343,26 @@ pub fn SchemaRegistry::list_versions(Self, String) -> Array[String]
 pub fn SchemaRegistry::new(default_level? : CompatibilityLevel) -> Self
 pub fn SchemaRegistry::register(Self, Schema) -> Result[Unit, String]
 
+pub(all) enum TokenType {
+  TokIdent(String)
+  TokString(String)
+  TokNumber(Double)
+  TokOp(String)
+  TokEOF
+} derive(Eq, @debug.Debug)
+
 pub(all) struct ValidationError {
   field : String
   message : String
   code : String
 } derive(Eq, @debug.Debug)
+
+pub(all) struct ValidationOptions {
+  allow_extra_fields : Bool
+  enable_coercion : Bool
+  strict_enums : Bool
+} derive(Eq, @debug.Debug)
+pub fn ValidationOptions::default() -> Self
 
 pub(all) struct ValidationResult {
   is_valid : Bool
@@ -136,6 +370,15 @@ pub(all) struct ValidationResult {
 } derive(Eq, @debug.Debug)
 pub fn ValidationResult::fail(Array[ValidationError]) -> Self
 pub fn ValidationResult::ok() -> Self
+
+pub(all) struct VersionRange {
+  min_version : @types.SemVer?
+  include_min : Bool
+  max_version : @types.SemVer?
+  include_max : Bool
+} derive(Eq, @debug.Debug)
+pub fn VersionRange::any() -> Self
+pub fn VersionRange::at_least(@types.SemVer) -> Self
 
 // Type aliases
 

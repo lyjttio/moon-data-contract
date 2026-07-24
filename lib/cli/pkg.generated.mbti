@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moon-data-contract/lib/cli"
+
+import {
+  "lyjttio/moon-data-contract/lib/types",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn parse_cli_args(Array[String]) -> CliCommand
+
+pub fn print_help_menu() -> String
+
+pub fn run_cli_command(CliCommand, @types.ContractSchema) -> String
+
+// Errors
+
+// Types and methods
+pub(all) enum CliCommand {
+  CmdValidate(String, String)
+  CmdDiff(String, String)
+  CmdCheck(String, String, String)
+  CmdExport(String, String)
+  CmdHelp
+  CmdVersion
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+

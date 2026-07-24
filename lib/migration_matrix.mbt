@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Multi-Version Migration Compatibility Matrix
 
+///|
 pub(all) struct MatrixCell {
   from_version : String
   to_version : String
@@ -7,15 +8,17 @@ pub(all) struct MatrixCell {
   breaking_count : Int
 } derive(Debug, Eq)
 
+///|
 pub(all) struct MigrationMatrix {
   schema_id : String
   versions : Array[String]
   cells : Array[MatrixCell]
 } derive(Debug, Eq)
 
+///|
 pub fn build_migration_matrix(
   schemas : Array[Schema],
-  level : CompatibilityLevel
+  level : CompatibilityLevel,
 ) -> MigrationMatrix {
   let version_names : Array[String] = []
   let cells : Array[MatrixCell] = []

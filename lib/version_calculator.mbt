@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Semantic Version Bump Calculator
 
+///|
 pub(all) enum RecommendedBump {
   BumpMajor
   BumpMinor
@@ -7,6 +8,7 @@ pub(all) enum RecommendedBump {
   BumpNone
 } derive(Debug, Eq)
 
+///|
 pub fn calculate_version_bump(diffs : Array[AstDiffNode]) -> RecommendedBump {
   let mut has_breaking = false
   let mut has_non_breaking = false
@@ -28,10 +30,15 @@ pub fn calculate_version_bump(diffs : Array[AstDiffNode]) -> RecommendedBump {
   }
 }
 
+///|
 pub fn calculate_total_risk_score(diffs : Array[AstDiffNode]) -> Int {
   let mut total = 0
   for i = 0; i < diffs.length(); i = i + 1 {
     total = total + diffs[i].risk_score
   }
-  if total > 100 { 100 } else { total }
+  if total > 100 {
+    100
+  } else {
+    total
+  }
 }

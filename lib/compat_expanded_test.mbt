@@ -1,7 +1,16 @@
+///|
 test "compat: transitive compatibility across version chain" {
   let f1 = Field::new("id", DataType::Primitive(PrimitiveType::TInt))
-  let f2 = Field::new("email", DataType::Primitive(PrimitiveType::TString), required=false)
-  let f3 = Field::new("phone", DataType::Primitive(PrimitiveType::TString), required=false)
+  let f2 = Field::new(
+    "email",
+    DataType::Primitive(PrimitiveType::TString),
+    required=false,
+  )
+  let f3 = Field::new(
+    "phone",
+    DataType::Primitive(PrimitiveType::TString),
+    required=false,
+  )
 
   let s1 = Schema::new("user", "User", "1.0.0", "team", [f1])
   let s2 = Schema::new("user", "User", "1.1.0", "team", [f1, f2])
@@ -12,9 +21,14 @@ test "compat: transitive compatibility across version chain" {
   assert_eq(res.version_chain.length(), 3)
 }
 
+///|
 test "compat: migration matrix generation" {
   let f1 = Field::new("id", DataType::Primitive(PrimitiveType::TInt))
-  let f2 = Field::new("email", DataType::Primitive(PrimitiveType::TString), required=false)
+  let f2 = Field::new(
+    "email",
+    DataType::Primitive(PrimitiveType::TString),
+    required=false,
+  )
 
   let s1 = Schema::new("user", "User", "1.0.0", "team", [f1])
   let s2 = Schema::new("user", "User", "1.1.0", "team", [f1, f2])

@@ -1,7 +1,10 @@
 // MoonBit Data Contract - Value Coercion Engine
 
+///|
 fn parse_int_simple(s : String) -> Int? {
-  if s.length() == 0 { return None }
+  if s.length() == 0 {
+    return None
+  }
   let mut acc = 0
   for i = 0; i < s.length(); i = i + 1 {
     let ch = s[i]
@@ -14,21 +17,23 @@ fn parse_int_simple(s : String) -> Int? {
   Some(acc)
 }
 
-pub fn coerce_value_to_type(val : FieldValue, target_type : DataType) -> FieldValue? {
+///|
+pub fn coerce_value_to_type(
+  val : FieldValue,
+  target_type : DataType,
+) -> FieldValue? {
   match (val, target_type) {
-    (VString(s), Primitive(TInt)) => {
+    (VString(s), Primitive(TInt)) =>
       match parse_int_simple(s) {
         Some(n) => Some(VInt(n))
         None => None
       }
-    }
-    (VString(s), Primitive(TBool)) => {
+    (VString(s), Primitive(TBool)) =>
       match s {
         "true" | "TRUE" | "1" => Some(VBool(true))
         "false" | "FALSE" | "0" => Some(VBool(false))
         _ => None
       }
-    }
     (VInt(n), Primitive(TDouble)) => Some(VDouble(n.to_double()))
     (VInt(n), Primitive(TString)) => Some(VString(n.to_string()))
     (VDouble(d), Primitive(TString)) => Some(VString(d.to_string()))

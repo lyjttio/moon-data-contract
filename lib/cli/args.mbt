@@ -1,5 +1,6 @@
 // MoonBit Data Contract - CLI Argument Parser
 
+///|
 pub(all) enum CliCommand {
   CmdValidate(String, String)
   CmdDiff(String, String)
@@ -9,26 +10,25 @@ pub(all) enum CliCommand {
   CmdVersion
 } derive(Debug, Eq)
 
+///|
 pub fn parse_cli_args(args : Array[String]) -> CliCommand {
   if args.length() == 0 {
     return CmdHelp
   }
   let sub = args[0]
   match sub {
-    "validate" => {
+    "validate" =>
       if args.length() >= 3 {
         CmdValidate(args[1], args[2])
       } else {
         CmdHelp
       }
-    }
-    "diff" => {
+    "diff" =>
       if args.length() >= 3 {
         CmdDiff(args[1], args[2])
       } else {
         CmdHelp
       }
-    }
     "check" => {
       let level = if args.length() >= 4 { args[3] } else { "BACKWARD" }
       if args.length() >= 3 {

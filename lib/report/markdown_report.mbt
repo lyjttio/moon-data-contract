@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Advanced Markdown Evolution Report Generator
 
+///|
 pub(all) struct EvolutionDetail {
   field_name : String
   change_type : String
@@ -7,6 +8,7 @@ pub(all) struct EvolutionDetail {
   description : String
 } derive(Debug, Eq)
 
+///|
 pub(all) struct ContractReport {
   schema_id : String
   base_version : String
@@ -16,6 +18,7 @@ pub(all) struct ContractReport {
   details : Array[EvolutionDetail]
 } derive(Debug, Eq)
 
+///|
 pub fn ContractReport::to_markdown(self : ContractReport) -> String {
   let mut md = "# 📋 Schema Evolution Audit Report\n\n"
   md = md + "## Contract Metadata\n\n"
@@ -35,10 +38,14 @@ pub fn ContractReport::to_markdown(self : ContractReport) -> String {
 
   if !self.is_compatible {
     md = md + "> [!CAUTION]\n"
-    md = md + "> **BREAKING CHANGE ALERT**: Target version contains breaking changes violating " + self.level_name + " policy.\n\n"
+    md = md +
+      "> **BREAKING CHANGE ALERT**: Target version contains breaking changes violating " +
+      self.level_name +
+      " policy.\n\n"
   } else {
     md = md + "> [!NOTE]\n"
-    md = md + "> Schema evolution meets compatibility standards. Safe to register and deploy.\n\n"
+    md = md +
+      "> Schema evolution meets compatibility standards. Safe to register and deploy.\n\n"
   }
 
   md = md + "## Change Summary & Breakdowns\n\n"
@@ -48,7 +55,16 @@ pub fn ContractReport::to_markdown(self : ContractReport) -> String {
   for i = 0; i < self.details.length(); i = i + 1 {
     let d = self.details[i]
     let breaking_badge = if d.is_breaking { "🚨 YES" } else { "✨ NO" }
-    md = md + "| `" + d.field_name + "` | " + d.change_type + " | " + breaking_badge + " | " + d.description + " |\n"
+    md = md +
+      "| `" +
+      d.field_name +
+      "` | " +
+      d.change_type +
+      " | " +
+      breaking_badge +
+      " | " +
+      d.description +
+      " |\n"
   }
 
   md

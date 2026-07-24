@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Semantic Versioning (SemVer) System
 
+///|
 pub(all) struct SemVer {
   major : Int
   minor : Int
@@ -7,15 +8,17 @@ pub(all) struct SemVer {
   prerelease : String?
 } derive(Debug, Eq)
 
+///|
 pub fn SemVer::new(
   major : Int,
   minor : Int,
   patch : Int,
-  prerelease~ : String? = None
+  prerelease? : String? = None,
 ) -> SemVer {
   { major, minor, patch, prerelease }
 }
 
+///|
 fn parse_int_simple(s : String) -> Int? {
   if s.length() == 0 {
     return None
@@ -32,6 +35,7 @@ fn parse_int_simple(s : String) -> Int? {
   Some(acc)
 }
 
+///|
 pub fn SemVer::parse(version_str : String) -> SemVer? {
   let parts : Array[String] = []
   let mut start_idx = 0
@@ -52,7 +56,12 @@ pub fn SemVer::parse(version_str : String) -> SemVer? {
     return None
   }
 
-  match (parse_int_simple(parts[0]), parse_int_simple(parts[1]), parse_int_simple(parts[2])) {
+  match
+    (
+      parse_int_simple(parts[0]),
+      parse_int_simple(parts[1]),
+      parse_int_simple(parts[2]),
+    ) {
     (Some(maj), Some(min), Some(pat)) => {
       let pre = if parts.length() > 3 { Some(parts[3]) } else { None }
       Some(SemVer::new(maj, min, pat, prerelease=pre))
@@ -61,14 +70,20 @@ pub fn SemVer::parse(version_str : String) -> SemVer? {
   }
 }
 
+///|
 pub fn SemVer::to_string(self : SemVer) -> String {
-  let base = self.major.to_string() + "." + self.minor.to_string() + "." + self.patch.to_string()
+  let base = self.major.to_string() +
+    "." +
+    self.minor.to_string() +
+    "." +
+    self.patch.to_string()
   match self.prerelease {
     Some(pre) => base + "-" + pre
     None => base
   }
 }
 
+///|
 pub fn SemVer::compare(self : SemVer, other : SemVer) -> Int {
   if self.major != other.major {
     return if self.major > other.major { 1 } else { -1 }
@@ -82,14 +97,17 @@ pub fn SemVer::compare(self : SemVer, other : SemVer) -> Int {
   0
 }
 
+///|
 pub fn SemVer::bump_major(self : SemVer) -> SemVer {
   SemVer::new(self.major + 1, 0, 0)
 }
 
+///|
 pub fn SemVer::bump_minor(self : SemVer) -> SemVer {
   SemVer::new(self.major, self.minor + 1, 0)
 }
 
+///|
 pub fn SemVer::bump_patch(self : SemVer) -> SemVer {
   SemVer::new(self.major, self.minor, self.patch + 1)
 }

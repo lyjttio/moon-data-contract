@@ -1,3 +1,7 @@
+import {
+  "lyjttio/moon-data-contract/lib/types",
+}
+
 options(
   "is-main": false,
 )

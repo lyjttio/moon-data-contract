@@ -1,3 +1,4 @@
+///|
 test "types: primitive and data type string formatting" {
   let p = PrimitiveKind::PInt
   assert_eq(p.to_string(), "int")
@@ -7,6 +8,7 @@ test "types: primitive and data type string formatting" {
   assert_eq(t_arr.to_string(), "array<string>")
 }
 
+///|
 test "types: semver parsing and comparison" {
   let v1_opt = SemVer::parse("1.2.3")
   assert_true(v1_opt is Some(_))
@@ -22,6 +24,7 @@ test "types: semver parsing and comparison" {
   assert_eq(v3.to_string(), "1.3.0")
 }
 
+///|
 test "types: field rule and schema header construction" {
   let rule = FieldRule::new("R-001", "email", severity=SeverityWarning)
   assert_eq(rule.rule_id, "R-001")

@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Deep AST Diff & Structural Comparison Engine
 
+///|
 pub(all) enum AstChangeType {
   AstFieldAdded
   AstFieldRemoved
@@ -12,6 +13,7 @@ pub(all) enum AstChangeType {
   AstMetadataChanged
 } derive(Debug, Eq)
 
+///|
 pub(all) struct AstDiffNode {
   path : String
   change_type : AstChangeType
@@ -21,21 +23,23 @@ pub(all) struct AstDiffNode {
   risk_score : Int
 } derive(Debug, Eq)
 
+///|
 pub fn AstDiffNode::new(
   path : String,
   change_type : AstChangeType,
-  old_value~ : String? = None,
-  new_value~ : String? = None,
-  is_breaking~ : Bool = true,
-  risk_score~ : Int = 50
+  old_value? : String? = None,
+  new_value? : String? = None,
+  is_breaking? : Bool = true,
+  risk_score? : Int = 50,
 ) -> AstDiffNode {
   { path, change_type, old_value, new_value, is_breaking, risk_score }
 }
 
+///|
 pub fn diff_data_types(
   path : String,
   t1 : DataType,
-  t2 : DataType
+  t2 : DataType,
 ) -> Array[AstDiffNode] {
   let nodes : Array[AstDiffNode] = []
 
@@ -52,13 +56,15 @@ pub fn diff_data_types(
           }
         }
         if !found {
-          nodes.push(AstDiffNode::new(
-            path + "." + val1,
-            AstEnumVariantRemoved,
-            old_value=Some(val1),
-            is_breaking=true,
-            risk_score=80,
-          ))
+          nodes.push(
+            AstDiffNode::new(
+              path + "." + val1,
+              AstEnumVariantRemoved,
+              old_value=Some(val1),
+              is_breaking=true,
+              risk_score=80,
+            ),
+          )
         }
       }
       // Check added enum values
@@ -72,28 +78,31 @@ pub fn diff_data_types(
           }
         }
         if !found {
-          nodes.push(AstDiffNode::new(
-            path + "." + val2,
-            AstEnumVariantAdded,
-            new_value=Some(val2),
-            is_breaking=false,
-            risk_score=10,
-          ))
+          nodes.push(
+            AstDiffNode::new(
+              path + "." + val2,
+              AstEnumVariantAdded,
+              new_value=Some(val2),
+              is_breaking=false,
+              risk_score=10,
+            ),
+          )
         }
       }
     }
-    _ => {
+    _ =>
       if t1 != t2 {
-        nodes.push(AstDiffNode::new(
-          path,
-          AstFieldTypeModified,
-          old_value=Some(t1.to_string()),
-          new_value=Some(t2.to_string()),
-          is_breaking=true,
-          risk_score=90,
-        ))
+        nodes.push(
+          AstDiffNode::new(
+            path,
+            AstFieldTypeModified,
+            old_value=Some(t1.to_string()),
+            new_value=Some(t2.to_string()),
+            is_breaking=true,
+            risk_score=90,
+          ),
+        )
       }
-    }
   }
 
   nodes

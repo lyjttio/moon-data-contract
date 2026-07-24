@@ -1,5 +1,6 @@
 // MoonBit Data Contract - Transitive Compatibility Checker Across Multi-Version Chains
 
+///|
 pub(all) struct ChainCompatResult {
   schema_id : String
   version_chain : Array[String]
@@ -8,9 +9,10 @@ pub(all) struct ChainCompatResult {
   total_breaking : Int
 } derive(Debug, Eq)
 
+///|
 pub fn check_transitive_compatibility(
   versions : Array[Schema],
-  level : CompatibilityLevel
+  level : CompatibilityLevel,
 ) -> ChainCompatResult {
   if versions.length() <= 1 {
     let chain : Array[String] = []
@@ -18,7 +20,11 @@ pub fn check_transitive_compatibility(
       chain.push(versions[i].version)
     }
     return {
-      schema_id: if versions.length() == 1 { versions[0].id } else { "" },
+      schema_id: if versions.length() == 1 {
+        versions[0].id
+      } else {
+        ""
+      },
       version_chain: chain,
       overall_compatible: true,
       failed_step: None,
@@ -45,7 +51,9 @@ pub fn check_transitive_compatibility(
     total_breaking = total_breaking + report.breaking_count
     if !report.is_compatible {
       overall_compatible = false
-      failed_step = Some("Incompatible step: " + prev.version + " -> " + latest_schema.version)
+      failed_step = Some(
+        "Incompatible step: " + prev.version + " -> " + latest_schema.version,
+      )
       break
     }
   }

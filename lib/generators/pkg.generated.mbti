@@ -1,0 +1,46 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moon-data-contract/lib/generators"
+
+import {
+  "lyjttio/moon-data-contract/lib/types",
+}
+
+// Values
+pub fn export_to_avro_schema(@types.ContractSchema) -> String
+
+pub fn export_to_graphql_sdl(@types.ContractSchema) -> String
+
+pub fn export_to_graphviz_dot(@types.ContractSchema) -> String
+
+pub fn export_to_parquet_schema(@types.ContractSchema) -> String
+
+pub fn export_to_protobuf(@types.ContractSchema) -> String
+
+pub fn export_to_sql_ddl(@types.ContractSchema, dialect? : String) -> String
+
+pub fn export_to_typescript(@types.ContractSchema) -> String
+
+pub fn generate_mock_payload_json(@types.ContractSchema) -> String
+
+pub fn generate_mock_value(@types.DataType, String) -> String
+
+pub fn map_type_to_avro(@types.DataType) -> String
+
+pub fn map_type_to_graphql(@types.DataType) -> String
+
+pub fn map_type_to_parquet(@types.DataType) -> String
+
+pub fn map_type_to_proto(@types.DataType) -> String
+
+pub fn map_type_to_sql(@types.DataType, String) -> String
+
+pub fn map_type_to_ts(@types.DataType) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+
