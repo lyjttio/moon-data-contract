@@ -1,5 +1,6 @@
 // MoonBit Data Contract & Schema Evolution Tool - Data Contract Validator Engine
 
+///|
 pub(all) enum FieldValue {
   VBool(Bool)
   VInt(Int)
@@ -8,7 +9,11 @@ pub(all) enum FieldValue {
   VNull
 } derive(Debug, Eq)
 
-pub fn validate_field_value(field : Field, value : FieldValue?) -> Array[ValidationError] {
+///|
+pub fn validate_field_value(
+  field : Field,
+  value : FieldValue?,
+) -> Array[ValidationError] {
   let errors : Array[ValidationError] = []
 
   match value {
@@ -23,7 +28,9 @@ pub fn validate_field_value(field : Field, value : FieldValue?) -> Array[Validat
       if field.primary_key {
         errors.push({
           field: field.name,
-          message: "Primary key field '" + field.name + "' cannot be null or empty",
+          message: "Primary key field '" +
+          field.name +
+          "' cannot be null or empty",
           code: "INVALID_PRIMARY_KEY",
         })
       }
@@ -37,13 +44,12 @@ pub fn validate_field_value(field : Field, value : FieldValue?) -> Array[Validat
         (Primitive(TDouble), VInt(_)) => () // Implicit widening allowed
         (Primitive(TString), VString(_)) => ()
         (OptionalDef(_), _) => ()
-        _ => {
+        _ =>
           errors.push({
             field: field.name,
             message: "Field '" + field.name + "' type mismatch",
             code: "TYPE_MISMATCH",
           })
-        }
       }
 
       // Numerical range check
@@ -51,57 +57,65 @@ pub fn validate_field_value(field : Field, value : FieldValue?) -> Array[Validat
         VInt(v) => {
           let double_v = v.to_double()
           match field.constraint.min_value {
-            Some(min_v) => {
+            Some(min_v) =>
               if double_v < min_v {
                 errors.push({
                   field: field.name,
-                  message: "Field '" + field.name + "' value is below min threshold " + min_v.to_string(),
+                  message: "Field '" +
+                  field.name +
+                  "' value is below min threshold " +
+                  min_v.to_string(),
                   code: "VALUE_OUT_OF_RANGE",
                 })
               }
-            }
             None => ()
           }
           match field.constraint.max_value {
-            Some(max_v) => {
+            Some(max_v) =>
               if double_v > max_v {
                 errors.push({
                   field: field.name,
-                  message: "Field '" + field.name + "' value exceeds max threshold " + max_v.to_string(),
+                  message: "Field '" +
+                  field.name +
+                  "' value exceeds max threshold " +
+                  max_v.to_string(),
                   code: "VALUE_OUT_OF_RANGE",
                 })
               }
-            }
             None => ()
           }
         }
         VDouble(double_v) => {
           match field.constraint.min_value {
-            Some(min_v) => {
+            Some(min_v) =>
               if double_v < min_v {
                 errors.push({
                   field: field.name,
-                  message: "Field '" + field.name + "' value is below min threshold " + min_v.to_string(),
+                  message: "Field '" +
+                  field.name +
+                  "' value is below min threshold " +
+                  min_v.to_string(),
                   code: "VALUE_OUT_OF_RANGE",
                 })
               }
-            }
             None => ()
           }
           match field.constraint.max_value {
-            Some(max_v) => {
+            Some(max_v) =>
               if double_v > max_v {
                 errors.push({
                   field: field.name,
-                  message: "Field '" + field.name + "' value exceeds max threshold " + max_v.to_string(),
+                  message: "Field '" +
+                  field.name +
+                  "' value exceeds max threshold " +
+                  max_v.to_string(),
                   code: "VALUE_OUT_OF_RANGE",
                 })
               }
-            }
             None => ()
           }
         }
-        VString(str_v) => {
+        VString(str_v) =>
           match field.constraint.allowed_values {
             Some(allowed) => {
               let mut found = false
@@ -113,14 +127,17 @@ pub fn validate_field_value(field : Field, value : FieldValue?) -> Array[Validat
               if !found {
                 errors.push({
                   field: field.name,
-                  message: "Field '" + field.name + "' value '" + str_v + "' is not in allowed values",
+                  message: "Field '" +
+                  field.name +
+                  "' value '" +
+                  str_v +
+                  "' is not in allowed values",
                   code: "INVALID_ENUM_VALUE",
                 })
               }
             }
             None => ()
           }
-        }
         _ => ()
       }
     }
@@ -129,9 +146,10 @@ pub fn validate_field_value(field : Field, value : FieldValue?) -> Array[Validat
   errors
 }
 
+///|
 pub fn validate_schema_payload(
   schema : Schema,
-  payload : Map[String, FieldValue]
+  payload : Map[String, FieldValue],
 ) -> ValidationResult {
   let all_errors : Array[ValidationError] = []
 

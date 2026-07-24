@@ -1,3 +1,4 @@
+///|
 test "report: markdown and json generation" {
   let f1 = Field::new("id", DataType::Primitive(PrimitiveType::TInt))
   let f2 = Field::new("name", DataType::Primitive(PrimitiveType::TString))

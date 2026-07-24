@@ -1,5 +1,6 @@
 // MoonBit Data Contract & Schema Evolution Tool - CLI Executable
 
+///|
 fn main {
   println("=========================================================")
   println("  moon-data-contract - MoonBit Schema & Evolution Tool  ")
@@ -18,13 +19,9 @@ fn main {
     required=true,
     description="User Full Name",
   )
-  let s1 = @lib.Schema::new(
-    "user_schema",
-    "UserProfile",
-    "1.0.0",
-    "data_eng",
-    [f_id, f_name],
-  )
+  let s1 = @lib.Schema::new("user_schema", "UserProfile", "1.0.0", "data_eng", [
+    f_id, f_name,
+  ])
 
   println("\n[1] Schema v1.0.0 JSON Representation:")
   println(s1.to_json_string())
@@ -40,7 +37,9 @@ fn main {
   if val_res.is_valid {
     println("Status: PASSED ✅ (0 errors)")
   } else {
-    println("Status: FAILED ❌ (" + val_res.errors.length().to_string() + " errors)")
+    println(
+      "Status: FAILED ❌ (" + val_res.errors.length().to_string() + " errors)",
+    )
   }
 
   // 3. Evolve to Schema v1.1.0 (Non-breaking: Add optional email)
@@ -50,13 +49,9 @@ fn main {
     required=false,
     description="User Contact Email",
   )
-  let s2 = @lib.Schema::new(
-    "user_schema",
-    "UserProfile",
-    "1.1.0",
-    "data_eng",
-    [f_id, f_name, f_email],
-  )
+  let s2 = @lib.Schema::new("user_schema", "UserProfile", "1.1.0", "data_eng", [
+    f_id, f_name, f_email,
+  ])
 
   let report = @lib.check_compatibility(s1, s2, @lib.Backward)
   println("\n[3] Evolution Compatibility Check (v1.0.0 -> v1.1.0, BACKWARD):")

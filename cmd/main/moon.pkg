@@ -1,0 +1,5 @@
+import {
+  "lyjttio/moon-data-contract/lib",
+}
+
+pkgtype(kind: "executable")

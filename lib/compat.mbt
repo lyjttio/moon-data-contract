@@ -1,9 +1,10 @@
 // MoonBit Data Contract & Schema Evolution Tool - Schema Evolution Compatibility Checker
 
+///|
 pub fn check_compatibility(
   v1 : Schema,
   v2 : Schema,
-  level : CompatibilityLevel
+  level : CompatibilityLevel,
 ) -> EvolutionReport {
   let diffs = diff_schemas(v1, v2)
   let mut breaking_count = 0

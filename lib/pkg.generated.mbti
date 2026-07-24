@@ -1,0 +1,143 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moon-data-contract/lib"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn check_compatibility(Schema, Schema, CompatibilityLevel) -> EvolutionReport
+
+pub fn diff_schemas(Schema, Schema) -> Array[DiffEntry]
+
+pub fn find_field_by_name(Array[Field], String) -> Field?
+
+pub fn validate_field_value(Field, FieldValue?) -> Array[ValidationError]
+
+pub fn validate_schema_payload(Schema, Map[String, FieldValue]) -> ValidationResult
+
+// Errors
+
+// Types and methods
+pub(all) enum ChangeKind {
+  FieldAdded(Field)
+  FieldRemoved(Field)
+  TypeChanged(DataType, DataType)
+  RequiredChanged(Bool, Bool)
+  ConstraintChanged(String, String)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum CompatibilityLevel {
+  NoneLevel
+  Backward
+  Forward
+  Full
+} derive(Eq, @debug.Debug)
+pub fn CompatibilityLevel::from_string(String) -> Self
+pub fn CompatibilityLevel::to_string(Self) -> String
+
+pub(all) enum DataType {
+  Primitive(PrimitiveType)
+  EnumDef(Array[String])
+  ArrayDef(DataType)
+  OptionalDef(DataType)
+  StructDef(Array[Field])
+} derive(Eq, @debug.Debug)
+pub fn DataType::from_string(String) -> Self
+pub fn DataType::to_string(Self) -> String
+
+pub(all) struct DiffEntry {
+  field_name : String
+  kind : ChangeKind
+  impact : ImpactLevel
+  description : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct EvolutionReport {
+  schema_id : String
+  v1_version : String
+  v2_version : String
+  is_compatible : Bool
+  level : CompatibilityLevel
+  diffs : Array[DiffEntry]
+  breaking_count : Int
+  non_breaking_count : Int
+} derive(Eq, @debug.Debug)
+pub fn EvolutionReport::to_json_summary(Self) -> String
+pub fn EvolutionReport::to_markdown(Self) -> String
+
+pub(all) struct Field {
+  name : String
+  field_type : DataType
+  required : Bool
+  primary_key : Bool
+  description : String
+  constraint : FieldConstraint
+} derive(Eq, @debug.Debug)
+pub fn Field::new(String, DataType, required? : Bool, primary_key? : Bool, description? : String, constraint? : FieldConstraint) -> Self
+
+pub(all) struct FieldConstraint {
+  min_value : Double?
+  max_value : Double?
+  pattern : String?
+  allowed_values : Array[String]?
+} derive(Eq, @debug.Debug)
+pub fn FieldConstraint::default() -> Self
+
+pub(all) enum FieldValue {
+  VBool(Bool)
+  VInt(Int)
+  VDouble(Double)
+  VString(String)
+  VNull
+} derive(Eq, @debug.Debug)
+
+pub(all) enum ImpactLevel {
+  NonBreaking
+  Breaking
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PrimitiveType {
+  TBool
+  TInt
+  TDouble
+  TString
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Schema {
+  id : String
+  name : String
+  version : String
+  owner : String
+  fields : Array[Field]
+} derive(Eq, @debug.Debug)
+pub fn Schema::new(String, String, String, String, Array[Field]) -> Self
+pub fn Schema::to_json_string(Self) -> String
+
+pub(all) struct SchemaRegistry {
+  schemas : Map[String, Array[Schema]]
+  default_level : CompatibilityLevel
+} derive(Eq, @debug.Debug)
+pub fn SchemaRegistry::get_latest(Self, String) -> Schema?
+pub fn SchemaRegistry::get_version(Self, String, String) -> Schema?
+pub fn SchemaRegistry::list_versions(Self, String) -> Array[String]
+pub fn SchemaRegistry::new(default_level? : CompatibilityLevel) -> Self
+pub fn SchemaRegistry::register(Self, Schema) -> Result[Unit, String]
+
+pub(all) struct ValidationError {
+  field : String
+  message : String
+  code : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ValidationResult {
+  is_valid : Bool
+  errors : Array[ValidationError]
+} derive(Eq, @debug.Debug)
+pub fn ValidationResult::fail(Array[ValidationError]) -> Self
+pub fn ValidationResult::ok() -> Self
+
+// Type aliases
+
+// Traits
+

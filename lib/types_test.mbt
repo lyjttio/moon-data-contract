@@ -1,3 +1,4 @@
+///|
 test "types: field and schema construction" {
   let f1 = Field::new(
     "id",
@@ -17,11 +18,21 @@ test "types: field and schema construction" {
   assert_eq(schema.fields[0].primary_key, true)
 }
 
+///|
 test "types: compatibility level conversion" {
-  assert_eq(CompatibilityLevel::from_string("BACKWARD"), CompatibilityLevel::Backward)
-  assert_eq(CompatibilityLevel::from_string("FORWARD"), CompatibilityLevel::Forward)
+  assert_eq(
+    CompatibilityLevel::from_string("BACKWARD"),
+    CompatibilityLevel::Backward,
+  )
+  assert_eq(
+    CompatibilityLevel::from_string("FORWARD"),
+    CompatibilityLevel::Forward,
+  )
   assert_eq(CompatibilityLevel::from_string("FULL"), CompatibilityLevel::Full)
-  assert_eq(CompatibilityLevel::from_string("NONE"), CompatibilityLevel::NoneLevel)
+  assert_eq(
+    CompatibilityLevel::from_string("NONE"),
+    CompatibilityLevel::NoneLevel,
+  )
 
   assert_eq(CompatibilityLevel::Backward.to_string(), "BACKWARD")
   assert_eq(CompatibilityLevel::Forward.to_string(), "FORWARD")

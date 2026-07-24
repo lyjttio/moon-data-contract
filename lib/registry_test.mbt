@@ -1,11 +1,18 @@
+///|
 test "registry: register initial and evolution schema" {
   let reg = SchemaRegistry::new(default_level=Backward)
 
   let f_id = Field::new("id", DataType::Primitive(PrimitiveType::TInt))
-  let f_email = Field::new("email", DataType::Primitive(PrimitiveType::TString), required=false)
+  let f_email = Field::new(
+    "email",
+    DataType::Primitive(PrimitiveType::TString),
+    required=false,
+  )
 
   let s1 = Schema::new("user_contract", "UserContract", "1.0.0", "team", [f_id])
-  let s2 = Schema::new("user_contract", "UserContract", "1.1.0", "team", [f_id, f_email])
+  let s2 = Schema::new("user_contract", "UserContract", "1.1.0", "team", [
+    f_id, f_email,
+  ])
 
   let res1 = reg.register(s1)
   assert_true(res1 is Ok(_))
@@ -23,15 +30,28 @@ test "registry: register initial and evolution schema" {
   assert_eq(latest.unwrap().version, "1.1.0")
 }
 
+///|
 test "registry: reject breaking schema registration" {
   let reg = SchemaRegistry::new(default_level=Backward)
 
   let f_id = Field::new("id", DataType::Primitive(PrimitiveType::TInt))
-  let f_email = Field::new("email", DataType::Primitive(PrimitiveType::TString), required=false)
+  let f_email = Field::new(
+    "email",
+    DataType::Primitive(PrimitiveType::TString),
+    required=false,
+  )
 
-  let s1 = Schema::new("user_contract", "UserContract", "1.0.0", "team", [f_id, f_email])
+  let s1 = Schema::new("user_contract", "UserContract", "1.0.0", "team", [
+    f_id, f_email,
+  ])
   // s2 breaks compatibility by removing 'id'
-  let s2_breaking = Schema::new("user_contract", "UserContract", "2.0.0", "team", [f_email])
+  let s2_breaking = Schema::new(
+    "user_contract",
+    "UserContract",
+    "2.0.0",
+    "team",
+    [f_email],
+  )
 
   let res1 = reg.register(s1)
   assert_true(res1 is Ok(_))

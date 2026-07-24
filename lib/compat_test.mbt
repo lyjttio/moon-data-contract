@@ -1,9 +1,16 @@
+///|
 test "compat: backward compatibility pass and fail" {
   let f_id = Field::new("id", DataType::Primitive(PrimitiveType::TInt))
-  let f_email = Field::new("email", DataType::Primitive(PrimitiveType::TString), required=false)
+  let f_email = Field::new(
+    "email",
+    DataType::Primitive(PrimitiveType::TString),
+    required=false,
+  )
 
   let s1 = Schema::new("user", "User", "1.0.0", "team", [f_id])
-  let s2_compatible = Schema::new("user", "User", "1.1.0", "team", [f_id, f_email])
+  let s2_compatible = Schema::new("user", "User", "1.1.0", "team", [
+    f_id, f_email,
+  ])
 
   let report1 = check_compatibility(s1, s2_compatible, Backward)
   assert_true(report1.is_compatible)

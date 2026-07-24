@@ -1,17 +1,22 @@
 // MoonBit Data Contract & Schema Evolution Tool - Schema Registry & Version Manager
 
+///|
 pub(all) struct SchemaRegistry {
   schemas : Map[String, Array[Schema]]
   default_level : CompatibilityLevel
 } derive(Debug, Eq)
 
-pub fn SchemaRegistry::new(default_level~ : CompatibilityLevel = Backward) -> SchemaRegistry {
+///|
+pub fn SchemaRegistry::new(
+  default_level? : CompatibilityLevel = Backward,
+) -> SchemaRegistry {
   { schemas: Map([]), default_level }
 }
 
+///|
 pub fn SchemaRegistry::register(
   self : SchemaRegistry,
-  schema : Schema
+  schema : Schema,
 ) -> Result[Unit, String] {
   match self.schemas.get(schema.id) {
     None => {
@@ -25,29 +30,40 @@ pub fn SchemaRegistry::register(
         versions.push(schema)
         Ok(())
       } else {
-        Err("Registration rejected: Schema version " + schema.version + " violates " + self.default_level.to_string() + " compatibility with version " + latest.version)
+        Err(
+          "Registration rejected: Schema version " +
+          schema.version +
+          " violates " +
+          self.default_level.to_string() +
+          " compatibility with version " +
+          latest.version,
+        )
       }
     }
   }
 }
 
-pub fn SchemaRegistry::get_latest(self : SchemaRegistry, id : String) -> Schema? {
+///|
+pub fn SchemaRegistry::get_latest(
+  self : SchemaRegistry,
+  id : String,
+) -> Schema? {
   match self.schemas.get(id) {
     None => None
-    Some(versions) => {
+    Some(versions) =>
       if versions.length() == 0 {
         None
       } else {
         Some(versions[versions.length() - 1])
       }
-    }
   }
 }
 
+///|
 pub fn SchemaRegistry::get_version(
   self : SchemaRegistry,
   id : String,
-  version : String
+  version : String,
 ) -> Schema? {
   match self.schemas.get(id) {
     None => None
@@ -62,7 +78,11 @@ pub fn SchemaRegistry::get_version(
   }
 }
 
-pub fn SchemaRegistry::list_versions(self : SchemaRegistry, id : String) -> Array[String] {
+///|
+pub fn SchemaRegistry::list_versions(
+  self : SchemaRegistry,
+  id : String,
+) -> Array[String] {
   match self.schemas.get(id) {
     None => []
     Some(versions) => {

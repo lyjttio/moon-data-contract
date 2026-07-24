@@ -1,5 +1,6 @@
 // MoonBit Data Contract & Schema Evolution Tool - Schema JSON Parser & Serializer
 
+///|
 pub fn DataType::to_string(self : DataType) -> String {
   match self {
     Primitive(TBool) => "bool"
@@ -22,13 +23,14 @@ pub fn DataType::to_string(self : DataType) -> String {
   }
 }
 
+///|
 pub fn DataType::from_string(s : String) -> DataType {
   match s {
     "bool" | "boolean" => Primitive(TBool)
     "int" | "integer" => Primitive(TInt)
     "double" | "float" | "number" => Primitive(TDouble)
     "string" | "text" => Primitive(TString)
-    _ => {
+    _ =>
       if s.has_prefix("optional<") && s.has_suffix(">") {
         let inner_str = s[9:s.length() - 1].to_owned()
         OptionalDef(DataType::from_string(inner_str))
@@ -38,10 +40,10 @@ pub fn DataType::from_string(s : String) -> DataType {
       } else {
         Primitive(TString)
       }
-    }
   }
 }
 
+///|
 pub fn Schema::to_json_string(self : Schema) -> String {
   let mut buf = "{\n"
   buf = buf + "  \"id\": \"" + self.id + "\",\n"

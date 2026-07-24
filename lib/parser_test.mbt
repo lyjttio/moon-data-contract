@@ -1,3 +1,4 @@
+///|
 test "parser: data type to string and parsing" {
   let t_int = DataType::Primitive(PrimitiveType::TInt)
   let t_opt = DataType::OptionalDef(t_int)
@@ -12,6 +13,7 @@ test "parser: data type to string and parsing" {
   assert_eq(DataType::from_string("array<string>"), t_arr)
 }
 
+///|
 test "parser: schema to json string" {
   let f1 = Field::new(
     "id",

@@ -1,3 +1,4 @@
+///|
 test "integration: end-to-end data contract evolution lifecycle" {
   // Step 1: Create Schema Registry with BACKWARD policy
   let registry = SchemaRegistry::new(default_level=Backward)
@@ -13,9 +14,20 @@ test "integration: end-to-end data contract evolution lifecycle" {
     "amount",
     DataType::Primitive(PrimitiveType::TDouble),
     required=true,
-    constraint={ min_value: Some(0.01), max_value: None, pattern: None, allowed_values: None },
+    constraint={
+      min_value: Some(0.01),
+      max_value: None,
+      pattern: None,
+      allowed_values: None,
+    },
   )
-  let s1 = Schema::new("order_contract", "OrderContract", "1.0.0", "order_team", [f_order_id, f_amount])
+  let s1 = Schema::new(
+    "order_contract",
+    "OrderContract",
+    "1.0.0",
+    "order_team",
+    [f_order_id, f_amount],
+  )
 
   // Register v1.0.0
   let reg1 = registry.register(s1)
@@ -35,7 +47,13 @@ test "integration: end-to-end data contract evolution lifecycle" {
     DataType::Primitive(PrimitiveType::TString),
     required=false,
   )
-  let s2 = Schema::new("order_contract", "OrderContract", "1.1.0", "order_team", [f_order_id, f_amount, f_discount])
+  let s2 = Schema::new(
+    "order_contract",
+    "OrderContract",
+    "1.1.0",
+    "order_team",
+    [f_order_id, f_amount, f_discount],
+  )
 
   // Register v1.1.0
   let reg2 = registry.register(s2)
