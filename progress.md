@@ -23,3 +23,4 @@
 - 用户确认按申报书后续方向扩展离线数据契约治理流水线，目标生产源码 7,200–7,600 行。
 - 已完成并提交设计文档 `8f8a1d6`：包含 Snapshot、Policy、Migration、Governance、Report、CLI/Benchmark 六个模块；明确不实现 Kafka/HTTP/Bot 网络服务。
 - 已完成实施计划 `docs/superpowers/plans/2026-08-18-contract-governance-expansion.md`，等待选择执行方式后开始 TDD 实施。
+- Task 1 已完成 TDD：先观察 Snapshot 测试因类型缺失而失败，再实现不可变快照 Store、SemVer 排序、重复/非法版本拒绝和版本链问题分析；`moon test --deny-warn` 通过 62/62，`moon check --deny-warn` 通过，`moon info` 已生成接口。

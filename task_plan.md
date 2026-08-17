@@ -4,6 +4,8 @@
 
 在已完成 4,063 行生产源码的基础上，按申报书方向实现离线数据契约治理流水线，目标生产源码 7,200–7,600 行。具体范围、接口边界、测试策略和发布约束见 [`docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md`](docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md)。实施计划见 [`docs/superpowers/plans/2026-08-18-contract-governance-expansion.md`](docs/superpowers/plans/2026-08-18-contract-governance-expansion.md)。
 
+当前执行状态：Task 1 Snapshot 已完成；Task 2 Policy 待开始。
+
 ## 目标
 
 把 `moon-data-contract` 完成到可验收、可复现、可发布的结项状态：以有实际应用价值的功能把有效生产 MoonBit 源码提升到至少 4,000 行，补齐真实基准数据与边界测试，按最新 stable MoonBit 工具链完善 CI，修正文档赛事定位，完成 GitHub 默认分支/唯一贡献者/远程账号核验，并通过 Mooncakes 发布流程。

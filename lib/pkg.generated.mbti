@@ -9,6 +9,8 @@ import {
 // Values
 pub fn analyze_schema(Schema) -> AuditMetrics
 
+pub fn analyze_snapshot_chain(Array[SchemaSnapshot]) -> SnapshotChainReport
+
 pub fn apply_patch_to_schema(Schema, SchemaPatch) -> Schema
 
 pub fn audit_contract(Schema, Schema, Map[String, FieldValue], CompatibilityLevel) -> ContractAudit
@@ -451,6 +453,42 @@ pub fn SchemaRegistry::get_version(Self, String, String) -> Schema?
 pub fn SchemaRegistry::list_versions(Self, String) -> Array[String]
 pub fn SchemaRegistry::new(default_level? : CompatibilityLevel) -> Self
 pub fn SchemaRegistry::register(Self, Schema) -> Result[Unit, String]
+
+pub(all) struct SchemaSnapshot {
+  subject : String
+  schema : Schema
+  status : SnapshotStatus
+  source : String
+  created_at : String
+} derive(Eq, @debug.Debug)
+pub fn SchemaSnapshot::new(String, Schema, source? : String, created_at? : String, status? : SnapshotStatus) -> Self
+
+pub(all) struct SnapshotChainIssue {
+  code : String
+  message : String
+  version : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SnapshotChainReport {
+  ordered_versions : Array[String]
+  issues : Array[SnapshotChainIssue]
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SnapshotStatus {
+  Draft
+  Active
+  Deprecated
+  Revoked
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SnapshotStore {
+  snapshots : Map[String, Array[SchemaSnapshot]]
+} derive(Eq, @debug.Debug)
+pub fn SnapshotStore::get(Self, String, String) -> SchemaSnapshot?
+pub fn SnapshotStore::insert(Self, SchemaSnapshot) -> Result[Unit, String]
+pub fn SnapshotStore::latest(Self, String) -> SchemaSnapshot?
+pub fn SnapshotStore::list(Self, String) -> Array[SchemaSnapshot]
+pub fn SnapshotStore::new() -> Self
 
 pub(all) enum TokenType {
   TokIdent(String)
