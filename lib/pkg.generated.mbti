@@ -47,6 +47,8 @@ pub fn diff_schemas(Schema, Schema) -> Array[DiffEntry]
 
 pub fn evaluate_expression_rule(ExpressionRule, Map[String, FieldValue]) -> Array[ValidationError]
 
+pub fn evaluate_policy(GovernancePolicy, Schema, Schema, CompatibilityLevel) -> Array[PolicyFinding]
+
 pub fn filter_matching_schemas(Array[Schema], VersionRange) -> Array[Schema]
 
 pub fn find_field_by_name(Array[Field], String) -> Field?
@@ -60,6 +62,8 @@ pub fn get_schema_filepath(FileStoreConfig, String, String) -> String
 pub fn is_version_in_range(@types.SemVer, VersionRange) -> Bool
 
 pub fn lint_contract_schema(Schema) -> Array[LintIssue]
+
+pub fn policy_decision(Array[PolicyFinding]) -> PolicyDecision
 
 pub fn print_contract_spec(Schema) -> String
 
@@ -336,6 +340,18 @@ pub(all) struct FileStoreConfig {
 } derive(Eq, @debug.Debug)
 pub fn FileStoreConfig::new(String) -> Self
 
+pub(all) struct GovernancePolicy {
+  allow_required_additions : Bool
+  allow_removals : Bool
+  allow_type_changes : Bool
+  allow_constraint_changes : Bool
+  max_risk_score : Int
+  exceptions : Array[PolicyException]
+} derive(Eq, @debug.Debug)
+pub fn GovernancePolicy::permissive() -> Self
+pub fn GovernancePolicy::strict() -> Self
+pub fn GovernancePolicy::with_exception(Self, PolicyException) -> Self
+
 pub(all) enum ImpactLevel {
   NonBreaking
   Breaking
@@ -382,6 +398,44 @@ pub(all) enum PiiCategory {
   PiiPhoneNumber
   PiiNationalId
   PiiCreditCard
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PolicyDecision {
+  Allow
+  ApprovalRequired
+  Blocked
+} derive(Eq, @debug.Debug)
+
+pub(all) struct PolicyException {
+  subject : String
+  field_name : String
+  rule_id : String
+  reason : String
+} derive(Eq, @debug.Debug)
+pub fn PolicyException::new(String, String, String, String) -> Self
+
+pub(all) struct PolicyFinding {
+  rule_id : String
+  field_name : String
+  severity : PolicySeverity
+  blocking : Bool
+  exception_applied : Bool
+  risk_score : Int
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PolicyRuleKind {
+  OptionalFieldAdded
+  RequiredFieldAdded
+  FieldRemoved
+  TypeChanged
+  ConstraintChanged
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PolicySeverity {
+  Info
+  Warning
+  Error
 } derive(Eq, @debug.Debug)
 
 pub(all) enum PrimitiveType {

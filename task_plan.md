@@ -4,7 +4,7 @@
 
 在已完成 4,063 行生产源码的基础上，按申报书方向实现离线数据契约治理流水线，目标生产源码 7,200–7,600 行。具体范围、接口边界、测试策略和发布约束见 [`docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md`](docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md)。实施计划见 [`docs/superpowers/plans/2026-08-18-contract-governance-expansion.md`](docs/superpowers/plans/2026-08-18-contract-governance-expansion.md)。
 
-当前执行状态：Task 1 Snapshot 已完成；Task 2 Policy 待开始。
+当前执行状态：Task 1 Snapshot、Task 2 Policy 已完成；Task 3 Migration 待开始。
 
 ## 目标
 
