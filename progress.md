@@ -17,3 +17,9 @@
 - 验收脚本曾因 PowerShell `*.mbt` 通配符把 `.mbti` 计入源码，已改为精确扩展名 `.mbt` 并验证 production=4063、test=1064、total=5127。
 - 提交 `9d75de4` 推送后，CI 首次运行遇到 Windows action 下载 429；提交 `43c0c7e` 移除该外部依赖并改为 Windows portable targets，最终 CI run `32042535409` 全部通过。
 - GitHub owner/default branch 核验为 `lyjttio`/`main`；Mooncakes `moon whoami` 为 `lyjttio`，正式 `moon publish` 返回 200 OK。
+
+## 2026-08-18 治理流水线扩展
+
+- 用户确认按申报书后续方向扩展离线数据契约治理流水线，目标生产源码 7,200–7,600 行。
+- 已完成并提交设计文档 `8f8a1d6`：包含 Snapshot、Policy、Migration、Governance、Report、CLI/Benchmark 六个模块；明确不实现 Kafka/HTTP/Bot 网络服务。
+- 已完成实施计划 `docs/superpowers/plans/2026-08-18-contract-governance-expansion.md`，等待选择执行方式后开始 TDD 实施。

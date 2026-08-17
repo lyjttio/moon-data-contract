@@ -66,3 +66,9 @@
 - `gh api user` 曾多次返回 GitHub API HTTP 503，但 `gh repo view` 随后直接确认 owner=`lyjttio`、default branch=`main`；结合精确远程 dry-run/push 成功，GitHub 目标核验完成。
 - 两个赛事 URL 被网页工具判定为不安全；已改用公开原始文件和搜索结果，未把未验证页面内容当作事实。
 - `git add` / `git commit` 无法创建 `.git/index.lock`，提示 Permission denied；提交和推送阶段需要使用提升权限命令。
+
+## 2026-08-18 扩展设计发现
+
+- 当前生产规模为 4,063 行，新增 3,000–3,500 行即可进入 7,200–7,600 行目标区间。
+- 现有根 `lib` 已依赖公开 `lib/types`，可复用 `@types.SemVer`、`Schema`、`DiffEntry`、`check_compatibility` 和 Registry，不需要新增第三方依赖。
+- 由于 CLI 文件解析尚未实现，治理命令将采用确定性内置样例和库 API；文档必须明确这一边界。
