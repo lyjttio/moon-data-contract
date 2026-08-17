@@ -27,3 +27,4 @@
 - Task 2 已完成 TDD：先观察 Policy API 缺失失败，再实现 strict/permissive 策略、规则 finding、阻断决策、精确例外匹配和稳定排序；`moon test --deny-warn` 通过 65/65，`moon check --deny-warn` 和 `moon info` 通过。
 - Task 3 已完成 TDD：先观察 Migration API 缺失失败，再实现可自动/人工/不安全动作分类、类型扩展/收窄识别、确定性动作排序和回滚问题检查；`moon test --deny-warn` 通过 68/68，`moon check --deny-warn` 和 `moon info` 通过。
 - Task 4 已完成 TDD：先观察 Governance API 缺失失败，再实现空链/兼容链/阻断链的治理编排、发布状态、风险分数、阻断 findings 和迁移指标；修正共享测试夹具后 `moon test --deny-warn` 通过 72/72，`moon check --deny-warn` 和 `moon info` 通过。
+- Task 5 已完成 TDD：先观察报告 API 缺失失败，再实现确定性的 Markdown、JSON、JUnit 输出及 JSON/XML 转义；`moon test --deny-warn` 通过 75/75，`moon check --deny-warn`、`moon info` 和 `git diff --check` 通过。

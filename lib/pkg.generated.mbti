@@ -65,6 +65,8 @@ pub fn govern_subject(SnapshotStore, String, GovernancePolicy, CompatibilityLeve
 
 pub fn is_version_in_range(@types.SemVer, VersionRange) -> Bool
 
+pub fn json_escape(String) -> String
+
 pub fn lint_contract_schema(Schema) -> Array[LintIssue]
 
 pub fn plan_schema_migration(Schema, Schema) -> MigrationPlan
@@ -379,6 +381,9 @@ pub(all) struct GovernanceResult {
 pub fn GovernanceResult::blocking_findings(Self) -> Array[PolicyFinding]
 pub fn GovernanceResult::is_release_allowed(Self) -> Bool
 pub fn GovernanceResult::risk_score(Self) -> Int
+pub fn GovernanceResult::to_json(Self) -> String
+pub fn GovernanceResult::to_junit(Self) -> String
+pub fn GovernanceResult::to_markdown(Self) -> String
 
 pub(all) enum GovernanceStatus {
   Ready
