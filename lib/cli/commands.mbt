@@ -18,6 +18,14 @@ pub fn print_help_menu() -> String {
   help = help +
     "  audit                                     Run contract acceptance audit\n"
   help = help +
+    "  govern                                    Render the release governance report\n"
+  help = help +
+    "  snapshot                                  Inspect the deterministic snapshot chain\n"
+  help = help +
+    "  plan                                      Render the next migration plan\n"
+  help = help +
+    "  policy                                    Evaluate the strict policy for the next transition\n"
+  help = help +
     "  version                                   Show tool version\n"
   help +
   "\nPortable CLI note: JSON file contents are not decoded yet; use the library APIs for loaded schemas and payloads.\n"
@@ -41,6 +49,56 @@ pub fn run_cli_command(
         workload.payload,
         @lib.CompatibilityLevel::Backward,
       ).to_markdown()
+    }
+    CmdGovern =>
+      @lib.govern_subject(
+        @lib.benchmark_governance_store(),
+        "orders",
+        @lib.GovernancePolicy::strict(),
+        @lib.CompatibilityLevel::Backward,
+      ).to_markdown()
+    CmdSnapshot => {
+      let report = @lib.analyze_snapshot_chain(
+        @lib.benchmark_governance_snapshots(),
+      )
+      "Snapshot chain\n" +
+      "- Subject: orders\n" +
+      "- Versions: " +
+      report.ordered_versions.length().to_string() +
+      "\n" +
+      "- Issues: " +
+      report.issues.length().to_string() +
+      "\n"
+    }
+    CmdPlan => {
+      let snapshots = @lib.benchmark_governance_snapshots()
+      let plan = @lib.plan_schema_migration(
+        snapshots[0].schema,
+        snapshots[1].schema,
+      )
+      "Migration plan\n" +
+      "- Base: " +
+      plan.base_version +
+      "\n" +
+      "- Target: " +
+      plan.target_version +
+      "\n" +
+      "- Actions: " +
+      plan.actions.length().to_string() +
+      "\n"
+    }
+    CmdPolicy => {
+      let snapshots = @lib.benchmark_governance_snapshots()
+      let findings = @lib.evaluate_policy(
+        @lib.GovernancePolicy::strict(),
+        snapshots[0].schema,
+        snapshots[1].schema,
+        @lib.CompatibilityLevel::Backward,
+      )
+      "Policy evaluation\n" +
+      "- Findings: " +
+      findings.length().to_string() +
+      "\n"
     }
     CmdValidate(schema_path, payload_path) =>
       "Validation preview\n" +

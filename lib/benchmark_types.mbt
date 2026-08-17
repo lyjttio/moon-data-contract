@@ -5,6 +5,10 @@ pub(all) enum BenchmarkOperation {
   Validate
   Diff
   Compatibility
+  SnapshotChainScan
+  PolicyEvaluation
+  MigrationPlanning
+  GovernanceReporting
 } derive(Debug, Eq)
 
 ///|

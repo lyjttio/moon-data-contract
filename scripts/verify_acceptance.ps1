@@ -33,8 +33,10 @@ try {
   $testLines = (($tests | Get-Content | Measure-Object -Line).Lines)
   $totalLines = (($files | Get-Content | Measure-Object -Line).Lines)
 
-  Assert-Condition ($productionLines -ge 4000) "production MoonBit lines >= 4000 (actual: $productionLines)"
-  Assert-Condition ($tests.Count -ge 40) "test file count >= 40 (actual: $($tests.Count))"
+  Assert-Condition ($productionLines -ge 7200 -and $productionLines -le 7600) "production MoonBit lines are within 7200-7600 (actual: $productionLines)"
+  Assert-Condition ($tests.Count -ge 55) "test file count >= 55 (actual: $($tests.Count))"
+  Assert-Condition (Test-Path -LiteralPath "lib/governance_trace.mbt") "governance trace module exists"
+  Assert-Condition (Test-Path -LiteralPath "lib/release_checklist.mbt") "release checklist module exists"
   Assert-Condition ((Get-Content README.md -Raw).Contains("8 月黑客松")) "README identifies the August Hackathon"
   Assert-Condition ((Get-Content README.md -Raw).Contains("benchmarks/latest.md")) "README links measured benchmark evidence"
   Assert-Condition ((Get-Content README.md -Raw).Contains("Apache License 2.0")) "README states the project license"
@@ -44,6 +46,10 @@ try {
   Assert-Condition ((Get-Content .github/workflows/ci.yml -Raw).Contains("moon info")) "CI checks generated interfaces"
   Assert-Condition ((Get-Content .github/workflows/publish.yml -Raw).Contains("moon publish")) "publish workflow invokes Mooncakes"
   Assert-Condition ((Get-Content .github/workflows/publish.yml -Raw).Contains("MOONCAKES_TOKEN")) "publish workflow uses a secret"
+  Assert-Condition ((Get-Content lib/benchmark_fixtures.mbt -Raw).Contains("snapshot-chain-scan")) "benchmark includes snapshot chain scan"
+  Assert-Condition ((Get-Content lib/benchmark_fixtures.mbt -Raw).Contains("governance-reporting")) "benchmark includes governance reporting"
+  $cliCommands = Get-Content lib/cli/commands.mbt -Raw
+  Assert-Condition ($cliCommands.Contains("govern") -and $cliCommands.Contains("snapshot") -and $cliCommands.Contains("plan") -and $cliCommands.Contains("policy")) "CLI includes governance commands"
 
   if (-not $SkipMoonCommands) {
     Invoke-Moon @("fmt", "--check")

@@ -80,6 +80,67 @@ fn benchmark_wide_payload(schema : Schema) -> Map[String, FieldValue] {
 }
 
 ///|
+fn benchmark_governance_schema(
+  version : String,
+  fields : Array[Field],
+) -> Schema {
+  Schema::new("orders", "Orders", version, "benchmark-governance", fields)
+}
+
+///|
+pub fn benchmark_governance_snapshots() -> Array[SchemaSnapshot] {
+  let id = Field::new("id", Primitive(TInt), primary_key=true)
+  let customer = Field::new("customer", Primitive(TString), required=true)
+  let amount = Field::new("amount", Primitive(TDouble), required=false)
+  let currency = Field::new("currency", Primitive(TString), required=false)
+  let v1 = benchmark_governance_schema("1.0.0", [id, customer])
+  let v2 = benchmark_governance_schema("1.1.0", [id, customer, amount])
+  let v3 = benchmark_governance_schema("1.2.0", [id, customer, amount, currency])
+  let v4 = benchmark_governance_schema("2.0.0", [
+    id,
+    customer,
+    amount,
+    currency,
+    Field::new("region", Primitive(TString)),
+  ])
+  [
+    SchemaSnapshot::new(
+      "orders",
+      v1,
+      source="benchmark",
+      created_at="2026-08-18T00:00:00Z",
+    ),
+    SchemaSnapshot::new(
+      "orders",
+      v2,
+      source="benchmark",
+      created_at="2026-08-18T00:01:00Z",
+    ),
+    SchemaSnapshot::new(
+      "orders",
+      v3,
+      source="benchmark",
+      created_at="2026-08-18T00:02:00Z",
+    ),
+    SchemaSnapshot::new(
+      "orders",
+      v4,
+      source="benchmark",
+      created_at="2026-08-18T00:03:00Z",
+    ),
+  ]
+}
+
+///|
+pub fn benchmark_governance_store() -> SnapshotStore {
+  let store = SnapshotStore::new()
+  for snapshot in benchmark_governance_snapshots() {
+    ignore(store.insert(snapshot))
+  }
+  store
+}
+
+///|
 pub fn standard_benchmark_workloads() -> Array[BenchmarkWorkload] {
   let small = benchmark_small_schema()
   let evolved = benchmark_small_evolved_schema()
@@ -120,6 +181,38 @@ pub fn standard_benchmark_workloads() -> Array[BenchmarkWorkload] {
       next_schema: evolved,
       payload: Map([]),
       operation: BenchmarkOperation::Compatibility,
+    },
+    {
+      name: "snapshot-chain-scan",
+      iterations: 64,
+      schema: small,
+      next_schema: evolved,
+      payload: Map([]),
+      operation: BenchmarkOperation::SnapshotChainScan,
+    },
+    {
+      name: "policy-evaluation",
+      iterations: 96,
+      schema: small,
+      next_schema: evolved,
+      payload: Map([]),
+      operation: BenchmarkOperation::PolicyEvaluation,
+    },
+    {
+      name: "migration-planning",
+      iterations: 72,
+      schema: small,
+      next_schema: evolved,
+      payload: Map([]),
+      operation: BenchmarkOperation::MigrationPlanning,
+    },
+    {
+      name: "governance-reporting",
+      iterations: 40,
+      schema: small,
+      next_schema: evolved,
+      payload: Map([]),
+      operation: BenchmarkOperation::GovernanceReporting,
     },
   ]
 }

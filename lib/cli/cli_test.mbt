@@ -14,6 +14,18 @@ test "cli: argument parsing" {
 
   let c5 = parse_cli_args(["audit"])
   assert_eq(c5, CmdAudit)
+
+  let c6 = parse_cli_args(["govern"])
+  assert_eq(c6, CmdGovern)
+
+  let c7 = parse_cli_args(["snapshot"])
+  assert_eq(c7, CmdSnapshot)
+
+  let c8 = parse_cli_args(["plan"])
+  assert_eq(c8, CmdPlan)
+
+  let c9 = parse_cli_args(["policy"])
+  assert_eq(c9, CmdPolicy)
 }
 
 ///|
@@ -42,6 +54,18 @@ test "cli: command runner" {
 
   let res_audit = run_cli_command(CmdAudit, schema)
   assert_true(res_audit.contains("Contract Audit"))
+
+  let res_govern = run_cli_command(CmdGovern, schema)
+  assert_true(res_govern.contains("Contract Governance Report"))
+
+  let res_snapshot = run_cli_command(CmdSnapshot, schema)
+  assert_true(res_snapshot.contains("Snapshot chain"))
+
+  let res_plan = run_cli_command(CmdPlan, schema)
+  assert_true(res_plan.contains("Migration plan"))
+
+  let res_policy = run_cli_command(CmdPolicy, schema)
+  assert_true(res_policy.contains("Policy evaluation"))
 }
 
 ///|
@@ -50,4 +74,7 @@ test "cli: execute user arguments through the public entrypoint" {
   assert_true(benchmark_output.contains("Total operations"))
   let help_output = execute_cli_args([])
   assert_true(help_output.contains("Usage:"))
+  assert_true(
+    execute_cli_args(["govern"]).contains("Contract Governance Report"),
+  )
 }

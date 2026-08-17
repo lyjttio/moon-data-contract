@@ -39,6 +39,11 @@ try {
   $operations = [int]$operationsMatch.Groups[1].Value
   $elapsedMatch = [regex]::Match($benchmarkOutput, "Total elapsed \(us\): ([0-9.]+)")
   $coreElapsed = if ($elapsedMatch.Success) { $elapsedMatch.Groups[1].Value } else { "unknown" }
+  foreach ($workloadName in @("snapshot-chain-scan", "policy-evaluation", "migration-planning", "governance-reporting")) {
+    if (-not $benchmarkOutput.Contains($workloadName)) {
+      throw "Benchmark output did not contain workload $workloadName."
+    }
+  }
 
   $lines = [System.Collections.Generic.List[string]]::new()
   $lines.Add("# Reproducible Benchmark Evidence")
@@ -50,6 +55,7 @@ try {
   $lines.Add("- CPU: $cpu")
   $lines.Add("- MoonBit target: $target")
   $lines.Add("- Workload operations per run: $operations")
+  $lines.Add("- Governance workloads: snapshot-chain-scan, policy-evaluation, migration-planning, governance-reporting")
   $lines.Add("- MoonBit core elapsed reported by CLI (us): $coreElapsed")
   $lines.Add("")
   $lines.Add("## CLI wall-clock samples")

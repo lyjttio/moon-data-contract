@@ -8,6 +8,10 @@ pub(all) enum CliCommand {
   CmdExport(String, String)
   CmdBenchmark
   CmdAudit
+  CmdGovern
+  CmdSnapshot
+  CmdPlan
+  CmdPolicy
   CmdHelp
   CmdVersion
 } derive(Debug, Eq)
@@ -49,6 +53,10 @@ pub fn parse_cli_args(args : Array[String]) -> CliCommand {
     }
     "benchmark" => CmdBenchmark
     "audit" => CmdAudit
+    "govern" => CmdGovern
+    "snapshot" => CmdSnapshot
+    "plan" => CmdPlan
+    "policy" => CmdPolicy
     "version" | "-v" | "--version" => CmdVersion
     _ => CmdHelp
   }

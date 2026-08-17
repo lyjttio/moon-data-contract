@@ -25,6 +25,10 @@ pub(all) enum CliCommand {
   CmdExport(String, String)
   CmdBenchmark
   CmdAudit
+  CmdGovern
+  CmdSnapshot
+  CmdPlan
+  CmdPolicy
   CmdHelp
   CmdVersion
 } derive(Eq, @debug.Debug)

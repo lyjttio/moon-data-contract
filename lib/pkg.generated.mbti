@@ -17,13 +17,27 @@ pub fn audit_contract(Schema, Schema, Map[String, FieldValue], CompatibilityLeve
 
 pub fn batch_compare_schemas(Array[Schema], Array[Schema]) -> Array[BatchCompareResult]
 
+pub fn benchmark_governance_snapshots() -> Array[SchemaSnapshot]
+
+pub fn benchmark_governance_store() -> SnapshotStore
+
 pub fn build_changelog(String, String, String, Array[DiffEntry]) -> MigrationChangelog
 
 pub fn build_migration_matrix(Array[Schema], CompatibilityLevel) -> MigrationMatrix
 
+pub fn build_release_checklist(GovernanceResult, ApprovalLedger) -> ReleaseChecklist
+
+pub fn build_rollback_plan(MigrationPlan) -> RollbackPlan
+
 pub fn calculate_total_risk_score(Array[AstDiffNode]) -> Int
 
 pub fn calculate_version_bump(Array[AstDiffNode]) -> RecommendedBump
+
+pub fn catalog_release_ready(Array[GovernanceResult]) -> Bool
+
+pub fn catalog_risk_total(Array[GovernanceResult]) -> Int
+
+pub fn catalog_summary(ContractCatalog) -> String
 
 pub fn check_compatibility(Schema, Schema, CompatibilityLevel) -> EvolutionReport
 
@@ -41,6 +55,10 @@ pub fn clean_expired_versions(Array[Schema], RetentionPolicy) -> Array[Schema]
 
 pub fn coerce_value_to_type(FieldValue, DataType) -> FieldValue?
 
+pub fn compare_governance_results(GovernanceResult, GovernanceResult) -> GovernanceDelta
+
+pub fn count_snapshot_statuses(Array[SchemaSnapshot]) -> SnapshotStatusCounts
+
 pub fn count_total_ast_nodes(ContractAstNode) -> Int
 
 pub fn diff_data_types(String, DataType, DataType) -> Array[AstDiffNode]
@@ -50,6 +68,10 @@ pub fn diff_schemas(Schema, Schema) -> Array[DiffEntry]
 pub fn evaluate_expression_rule(ExpressionRule, Map[String, FieldValue]) -> Array[ValidationError]
 
 pub fn evaluate_policy(GovernancePolicy, Schema, Schema, CompatibilityLevel) -> Array[PolicyFinding]
+
+pub fn evaluate_policy_matrix(Schema, Schema, Array[PolicyProfile], Array[CompatibilityLevel]) -> PolicyMatrixReport
+
+pub fn evaluate_release_gate(GovernanceResult, ApprovalLedger) -> ReleaseGate
 
 pub fn filter_matching_schemas(Array[Schema], VersionRange) -> Array[Schema]
 
@@ -63,6 +85,18 @@ pub fn get_schema_filepath(FileStoreConfig, String, String) -> String
 
 pub fn govern_subject(SnapshotStore, String, GovernancePolicy, CompatibilityLevel) -> GovernanceResult
 
+pub fn governance_audit_summary(GovernanceResult) -> GovernanceAuditSummary
+
+pub fn governance_report_bundle(GovernanceResult) -> Array[String]
+
+pub fn governance_report_bundle_summary(GovernanceResult) -> String
+
+pub fn governance_report_filename(String, GovernanceReportFormat) -> String
+
+pub fn governance_report_formats() -> Array[GovernanceReportFormat]
+
+pub fn governance_risk_summary(GovernanceResult) -> String
+
 pub fn is_version_in_range(@types.SemVer, VersionRange) -> Bool
 
 pub fn json_escape(String) -> String
@@ -71,19 +105,79 @@ pub fn lint_contract_schema(Schema) -> Array[LintIssue]
 
 pub fn plan_schema_migration(Schema, Schema) -> MigrationPlan
 
+pub fn policy_allows_automatic_release(GovernancePolicy, Array[PolicyFinding]) -> Bool
+
 pub fn policy_decision(Array[PolicyFinding]) -> PolicyDecision
+
+pub fn policy_for_profile(PolicyProfile) -> GovernancePolicy
+
+pub fn policy_profile_name(PolicyProfile) -> String
+
+pub fn policy_profile_summary(PolicyProfile) -> String
+
+pub fn policy_risk_budget(GovernancePolicy, Array[PolicyFinding]) -> Int
+
+pub fn policy_validation_errors(GovernancePolicy) -> Array[String]
 
 pub fn print_contract_spec(Schema) -> String
 
 pub fn profile_schema(Schema) -> SchemaProfile
 
+pub fn query_snapshots(SnapshotStore, SnapshotQuery) -> Result[Array[SchemaSnapshot], String]
+
+pub fn recommend_governance_actions(GovernanceResult, ReleaseChecklist) -> Array[GovernanceRecommendation]
+
+pub fn recommendation_action_plan(Array[GovernanceRecommendation]) -> String
+
+pub fn recommendation_codes(Array[GovernanceRecommendation]) -> String
+
+pub fn recommendation_count(Array[GovernanceRecommendation], RecommendationPriority) -> Int
+
+pub fn recommendation_has_code(Array[GovernanceRecommendation], String) -> Bool
+
+pub fn recommendation_has_priority(Array[GovernanceRecommendation], RecommendationPriority) -> Bool
+
+pub fn recommendation_highest_priority(Array[GovernanceRecommendation]) -> RecommendationPriority
+
+pub fn recommendation_priority_is_blocking(RecommendationPriority) -> Bool
+
+pub fn recommendation_priority_label(RecommendationPriority) -> String
+
+pub fn recommendation_priority_rank(RecommendationPriority) -> Int
+
+pub fn recommendation_summary(String, Array[GovernanceRecommendation]) -> String
+
+pub fn recommendations_to_json(String, Array[GovernanceRecommendation]) -> String
+
+pub fn recommendations_to_markdown(String, Array[GovernanceRecommendation]) -> String
+
+pub fn recommendations_to_text(String, Array[GovernanceRecommendation]) -> String
+
+pub fn release_gate_summary(ReleaseGate) -> String
+
+pub fn render_governance_result(GovernanceResult, GovernanceReportFormat) -> String
+
+pub fn render_migration_batch(Array[MigrationPlan]) -> String
+
+pub fn risk_band(Int) -> RiskBand
+
+pub fn risk_band_text(RiskBand) -> String
+
+pub fn rollback_plan_summary(RollbackPlan) -> String
+
 pub fn run_standard_benchmark() -> BenchmarkReport
 
 pub fn run_workload(BenchmarkWorkload) -> BenchmarkMeasurement
 
+pub fn snapshot_lineage(Array[SchemaSnapshot]) -> Array[String]
+
+pub fn snapshot_query_summary(SnapshotStore, String) -> String
+
 pub fn standard_benchmark_workloads() -> Array[BenchmarkWorkload]
 
 pub fn tokenize_expression(String) -> Array[TokenType]
+
+pub fn trace_governance(SnapshotStore, String, GovernancePolicy, CompatibilityLevel) -> TracedGovernanceResult
 
 pub fn validate_field_value(Field, FieldValue?) -> Array[ValidationError]
 
@@ -93,9 +187,35 @@ pub fn validate_payload_with_options(Schema, Map[String, FieldValue], options? :
 
 pub fn validate_schema_payload(Schema, Map[String, FieldValue]) -> ValidationResult
 
+pub fn validate_snapshot_integrity(Array[SchemaSnapshot]) -> SnapshotIntegrityReport
+
 // Errors
 
 // Types and methods
+pub(all) enum ApprovalDecision {
+  Pending
+  Approved
+  Rejected
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ApprovalLedger {
+  records : Array[ApprovalRecord]
+} derive(Eq, @debug.Debug)
+pub fn ApprovalLedger::has_approval(Self, String, String) -> Bool
+pub fn ApprovalLedger::latest(Self, String, String) -> ApprovalRecord?
+pub fn ApprovalLedger::new() -> Self
+pub fn ApprovalLedger::reviewer_count(Self, String, String) -> Int
+pub fn ApprovalLedger::submit(Self, ApprovalRecord) -> Result[Unit, String]
+
+pub(all) struct ApprovalRecord {
+  subject : String
+  version : String
+  reviewer : String
+  decision : ApprovalDecision
+  reason : String
+} derive(Eq, @debug.Debug)
+pub fn ApprovalRecord::new(String, String, String, ApprovalDecision, String) -> Self
+
 pub(all) enum AstChangeType {
   AstFieldAdded
   AstFieldRemoved
@@ -168,6 +288,10 @@ pub(all) enum BenchmarkOperation {
   Validate
   Diff
   Compatibility
+  SnapshotChainScan
+  PolicyEvaluation
+  MigrationPlanning
+  GovernanceReporting
 } derive(Eq, @debug.Debug)
 
 pub(all) struct BenchmarkReport {
@@ -260,6 +384,18 @@ pub fn ContractAudit::to_json(Self) -> String
 pub fn ContractAudit::to_markdown(Self) -> String
 pub fn ContractAudit::warning_count(Self) -> Int
 
+pub(all) struct ContractCatalog {
+  store : SnapshotStore
+  subject_names : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn ContractCatalog::govern_all(Self, GovernancePolicy, CompatibilityLevel) -> Array[GovernanceResult]
+pub fn ContractCatalog::govern_subject(Self, String, GovernancePolicy, CompatibilityLevel) -> GovernanceResult
+pub fn ContractCatalog::new() -> Self
+pub fn ContractCatalog::register(Self, SchemaSnapshot) -> Result[Unit, String]
+pub fn ContractCatalog::snapshots(Self, String) -> Array[SchemaSnapshot]
+pub fn ContractCatalog::subject_count(Self) -> Int
+pub fn ContractCatalog::subjects(Self) -> Array[String]
+
 pub(all) struct DataGovernanceTag {
   category : PiiCategory
   is_sensitive : Bool
@@ -348,6 +484,29 @@ pub(all) struct FileStoreConfig {
 } derive(Eq, @debug.Debug)
 pub fn FileStoreConfig::new(String) -> Self
 
+pub(all) struct GovernanceAuditSummary {
+  subject : String
+  lines : Array[String]
+  release_allowed : Bool
+} derive(Eq, @debug.Debug)
+pub fn GovernanceAuditSummary::contains_line(Self, String) -> Bool
+pub fn GovernanceAuditSummary::to_text(Self) -> String
+
+pub(all) struct GovernanceDelta {
+  subject : String
+  status_changed : Bool
+  previous_risk_score : Int
+  current_risk_score : Int
+  risk_delta : Int
+  previous_transition_count : Int
+  current_transition_count : Int
+  new_finding_count : Int
+  resolved_finding_count : Int
+  new_blocking_count : Int
+} derive(Eq, @debug.Debug)
+pub fn GovernanceDelta::is_regression(Self) -> Bool
+pub fn GovernanceDelta::summary(Self) -> String
+
 pub(all) struct GovernanceMetrics {
   transition_count : Int
   finding_count : Int
@@ -356,6 +515,8 @@ pub(all) struct GovernanceMetrics {
   manual_migrations : Int
   risk_score : Int
 } derive(Eq, @debug.Debug)
+pub fn GovernanceMetrics::risk_band(Self) -> RiskBand
+pub fn GovernanceMetrics::summary(Self) -> String
 
 pub(all) struct GovernancePolicy {
   allow_required_additions : Bool
@@ -365,9 +526,28 @@ pub(all) struct GovernancePolicy {
   max_risk_score : Int
   exceptions : Array[PolicyException]
 } derive(Eq, @debug.Debug)
+pub fn GovernancePolicy::is_valid(Self) -> Bool
 pub fn GovernancePolicy::permissive() -> Self
 pub fn GovernancePolicy::strict() -> Self
 pub fn GovernancePolicy::with_exception(Self, PolicyException) -> Self
+pub fn GovernancePolicy::with_max_risk_score(Self, Int) -> Self
+pub fn GovernancePolicy::with_removals_allowed(Self, Bool) -> Self
+pub fn GovernancePolicy::with_type_changes_allowed(Self, Bool) -> Self
+
+pub(all) struct GovernanceRecommendation {
+  code : String
+  priority : RecommendationPriority
+  title : String
+  action : String
+  evidence : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum GovernanceReportFormat {
+  Markdown
+  Json
+  Junit
+} derive(Eq, @debug.Debug)
+pub fn GovernanceReportFormat::extension(Self) -> String
 
 pub(all) struct GovernanceResult {
   subject : String
@@ -380,6 +560,7 @@ pub(all) struct GovernanceResult {
 } derive(Eq, @debug.Debug)
 pub fn GovernanceResult::blocking_findings(Self) -> Array[PolicyFinding]
 pub fn GovernanceResult::is_release_allowed(Self) -> Bool
+pub fn GovernanceResult::risk_band(Self) -> RiskBand
 pub fn GovernanceResult::risk_score(Self) -> Int
 pub fn GovernanceResult::to_json(Self) -> String
 pub fn GovernanceResult::to_junit(Self) -> String
@@ -389,6 +570,34 @@ pub(all) enum GovernanceStatus {
   Ready
   NeedsApproval
   Blocked
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GovernanceTrace {
+  events : Array[GovernanceTraceEvent]
+} derive(Eq, @debug.Debug)
+pub fn GovernanceTrace::kind_count(Self, GovernanceTraceEventKind) -> Int
+pub fn GovernanceTrace::new() -> Self
+pub fn GovernanceTrace::record(Self, GovernanceTraceEventKind, String, String, String) -> Unit
+pub fn GovernanceTrace::stage_count(Self, String) -> Int
+pub fn GovernanceTrace::summary(Self) -> String
+pub fn GovernanceTrace::to_json(Self) -> String
+pub fn GovernanceTrace::to_markdown(Self) -> String
+
+pub(all) struct GovernanceTraceEvent {
+  kind : GovernanceTraceEventKind
+  stage : String
+  subject : String
+  version : String
+  detail : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum GovernanceTraceEventKind {
+  SnapshotLoaded
+  ChainAnalyzed
+  PolicyEvaluated
+  MigrationPlanned
+  ReportRendered
+  ReleaseEvaluated
 } derive(Eq, @debug.Debug)
 
 pub(all) enum ImpactLevel {
@@ -457,11 +666,22 @@ pub(all) struct MigrationPlan {
 pub fn MigrationPlan::automatic_action_count(Self) -> Int
 pub fn MigrationPlan::is_reversible(Self) -> Bool
 pub fn MigrationPlan::manual_action_count(Self) -> Int
+pub fn MigrationPlan::summary(Self) -> MigrationSummary
+pub fn MigrationPlan::to_json(Self) -> String
+pub fn MigrationPlan::to_markdown(Self) -> String
 
 pub(all) enum MigrationSafety {
   Automatic
   Manual
   Unsafe
+} derive(Eq, @debug.Debug)
+
+pub(all) struct MigrationSummary {
+  action_count : Int
+  automatic_count : Int
+  manual_count : Int
+  unsafe_count : Int
+  rollback_issue_count : Int
 } derive(Eq, @debug.Debug)
 
 pub(all) enum PiiCategory {
@@ -497,6 +717,30 @@ pub(all) struct PolicyFinding {
   message : String
 } derive(Eq, @debug.Debug)
 
+pub(all) struct PolicyMatrixCell {
+  profile : PolicyProfile
+  level : CompatibilityLevel
+  decision : PolicyDecision
+  finding_count : Int
+  risk_score : Int
+  allowed : Bool
+} derive(Eq, @debug.Debug)
+
+pub(all) struct PolicyMatrixReport {
+  cells : Array[PolicyMatrixCell]
+  allowed_count : Int
+  approval_count : Int
+  blocked_count : Int
+} derive(Eq, @debug.Debug)
+pub fn PolicyMatrixReport::to_json(Self) -> String
+pub fn PolicyMatrixReport::to_markdown(Self) -> String
+
+pub(all) enum PolicyProfile {
+  Development
+  Production
+  CompatibilityOnly
+} derive(Eq, @debug.Debug)
+
 pub(all) enum PolicyRuleKind {
   OptionalFieldAdded
   RequiredFieldAdded
@@ -518,6 +762,12 @@ pub(all) enum PrimitiveType {
   TString
 } derive(Eq, @debug.Debug)
 
+pub(all) enum RecommendationPriority {
+  Info
+  ActionRequired
+  Critical
+} derive(Eq, @debug.Debug)
+
 pub(all) enum RecommendedBump {
   BumpMajor
   BumpMinor
@@ -525,11 +775,57 @@ pub(all) enum RecommendedBump {
   BumpNone
 } derive(Eq, @debug.Debug)
 
+pub(all) struct ReleaseChecklist {
+  subject : String
+  items : Array[ReleaseChecklistItem]
+} derive(Eq, @debug.Debug)
+pub fn ReleaseChecklist::is_ready(Self) -> Bool
+pub fn ReleaseChecklist::passed_count(Self) -> Int
+pub fn ReleaseChecklist::to_markdown(Self) -> String
+
+pub(all) struct ReleaseChecklistItem {
+  code : String
+  label : String
+  passed : Bool
+  detail : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ReleaseGate {
+  allowed : Bool
+  status : GovernanceStatus
+  reason : String
+  target_version : String
+  approval_count : Int
+} derive(Eq, @debug.Debug)
+
 pub(all) struct RetentionPolicy {
   max_versions_to_keep : Int
   keep_first_version : Bool
 } derive(Eq, @debug.Debug)
 pub fn RetentionPolicy::default() -> Self
+
+pub(all) enum RiskBand {
+  Low
+  Medium
+  High
+  Critical
+} derive(Eq, @debug.Debug)
+
+pub(all) struct RollbackAction {
+  field_name : String
+  reverse_kind : MigrationActionKind
+  safe : Bool
+  reason : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct RollbackPlan {
+  source_version : String
+  target_version : String
+  actions : Array[RollbackAction]
+  issues : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn RollbackPlan::is_safe(Self) -> Bool
+pub fn RollbackPlan::to_markdown(Self) -> String
 
 pub(all) struct Schema {
   id : String
@@ -601,11 +897,40 @@ pub(all) struct SnapshotChainReport {
   issues : Array[SnapshotChainIssue]
 } derive(Eq, @debug.Debug)
 
+pub(all) struct SnapshotIntegrityIssue {
+  code : String
+  message : String
+  index : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SnapshotIntegrityReport {
+  checked_count : Int
+  issues : Array[SnapshotIntegrityIssue]
+} derive(Eq, @debug.Debug)
+pub fn SnapshotIntegrityReport::is_healthy(Self) -> Bool
+pub fn SnapshotIntegrityReport::to_json(Self) -> String
+pub fn SnapshotIntegrityReport::to_markdown(Self) -> String
+
+pub(all) struct SnapshotQuery {
+  subject : String
+  from_version : String
+  to_version : String
+  include_revoked : Bool
+} derive(Eq, @debug.Debug)
+pub fn SnapshotQuery::new(String, from_version? : String, to_version? : String, include_revoked? : Bool) -> Self
+
 pub(all) enum SnapshotStatus {
   Draft
   Active
   Deprecated
   Revoked
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SnapshotStatusCounts {
+  draft : Int
+  active : Int
+  deprecated : Int
+  revoked : Int
 } derive(Eq, @debug.Debug)
 
 pub(all) struct SnapshotStore {
@@ -623,6 +948,11 @@ pub(all) enum TokenType {
   TokNumber(Double)
   TokOp(String)
   TokEOF
+} derive(Eq, @debug.Debug)
+
+pub(all) struct TracedGovernanceResult {
+  result : GovernanceResult
+  trace : GovernanceTrace
 } derive(Eq, @debug.Debug)
 
 pub(all) struct ValidationError {
