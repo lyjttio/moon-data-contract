@@ -29,6 +29,8 @@ pub fn check_compatibility(Schema, Schema, CompatibilityLevel) -> EvolutionRepor
 
 pub fn check_enum_shrinking(String, Array[String], Array[String]) -> Array[BreakingRuleViolation]
 
+pub fn check_rollback(MigrationPlan) -> Array[String]
+
 pub fn check_transitive_compatibility(Array[Schema], CompatibilityLevel) -> ChainCompatResult
 
 pub fn classify_breaking_change(String, @types.DataType, @types.DataType) -> BreakingRuleViolation?
@@ -62,6 +64,8 @@ pub fn get_schema_filepath(FileStoreConfig, String, String) -> String
 pub fn is_version_in_range(@types.SemVer, VersionRange) -> Bool
 
 pub fn lint_contract_schema(Schema) -> Array[LintIssue]
+
+pub fn plan_schema_migration(Schema, Schema) -> MigrationPlan
 
 pub fn policy_decision(Array[PolicyFinding]) -> PolicyDecision
 
@@ -376,6 +380,25 @@ pub(all) struct MatrixCell {
   breaking_count : Int
 } derive(Eq, @debug.Debug)
 
+pub(all) struct MigrationAction {
+  field_name : String
+  kind : MigrationActionKind
+  safety : MigrationSafety
+  reversible : Bool
+  reason : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum MigrationActionKind {
+  AddOptionalField
+  AddRequiredField
+  RemoveField
+  WidenType
+  NarrowType
+  ChangeType
+  RelaxRequired
+  ChangeConstraint
+} derive(Eq, @debug.Debug)
+
 pub(all) struct MigrationChangelog {
   schema_id : String
   from_version : String
@@ -389,6 +412,21 @@ pub(all) struct MigrationMatrix {
   schema_id : String
   versions : Array[String]
   cells : Array[MatrixCell]
+} derive(Eq, @debug.Debug)
+
+pub(all) struct MigrationPlan {
+  base_version : String
+  target_version : String
+  actions : Array[MigrationAction]
+} derive(Eq, @debug.Debug)
+pub fn MigrationPlan::automatic_action_count(Self) -> Int
+pub fn MigrationPlan::is_reversible(Self) -> Bool
+pub fn MigrationPlan::manual_action_count(Self) -> Int
+
+pub(all) enum MigrationSafety {
+  Automatic
+  Manual
+  Unsafe
 } derive(Eq, @debug.Debug)
 
 pub(all) enum PiiCategory {
