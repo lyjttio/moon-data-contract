@@ -1,5 +1,6 @@
 import {
-  "lyjttio/moon-data-contract/lib",
+  "lyjttio/moon-data-contract/lib/cli",
+  "moonbitlang/core/env",
 }
 
 pkgtype(kind: "executable")

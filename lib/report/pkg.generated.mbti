@@ -33,4 +33,3 @@ pub(all) struct EvolutionDetail {
 // Type aliases
 
 // Traits
-

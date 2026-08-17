@@ -7,6 +7,8 @@ import {
 }
 
 // Values
+pub fn execute_cli_args(Array[String]) -> String
+
 pub fn parse_cli_args(Array[String]) -> CliCommand
 
 pub fn print_help_menu() -> String
@@ -21,6 +23,8 @@ pub(all) enum CliCommand {
   CmdDiff(String, String)
   CmdCheck(String, String, String)
   CmdExport(String, String)
+  CmdBenchmark
+  CmdAudit
   CmdHelp
   CmdVersion
 } derive(Eq, @debug.Debug)
@@ -28,4 +32,3 @@ pub(all) enum CliCommand {
 // Type aliases
 
 // Traits
-

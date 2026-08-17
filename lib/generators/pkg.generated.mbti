@@ -43,4 +43,3 @@ pub fn map_type_to_ts(@types.DataType) -> String
 // Type aliases
 
 // Traits
-

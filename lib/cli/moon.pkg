@@ -1,4 +1,5 @@
 import {
+  "lyjttio/moon-data-contract/lib",
   "lyjttio/moon-data-contract/lib/types",
   "lyjttio/moon-data-contract/lib/generators",
 }

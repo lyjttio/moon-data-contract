@@ -39,4 +39,3 @@ pub fn ConstraintViolation::new(String, String, String) -> Self
 // Type aliases
 
 // Traits
-

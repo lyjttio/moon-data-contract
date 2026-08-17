@@ -1,0 +1,58 @@
+param(
+  [switch]$SkipMoonCommands
+)
+
+$ErrorActionPreference = "Stop"
+$repoRoot = Split-Path -Parent $PSScriptRoot
+
+function Assert-Condition([bool]$condition, [string]$message) {
+  if (-not $condition) {
+    throw "ACCEPTANCE CHECK FAILED: $message"
+  }
+  Write-Output "PASS: $message"
+}
+
+function Invoke-Moon([string[]]$arguments) {
+  Write-Output ("> moon " + ($arguments -join " "))
+  & moon @arguments
+  if ($LASTEXITCODE -ne 0) {
+    throw "Moon command failed with exit code $LASTEXITCODE."
+  }
+}
+
+Push-Location $repoRoot
+try {
+  foreach ($path in @("README.md", "LICENSE", "moon.mod", ".github/workflows/ci.yml", ".github/workflows/publish.yml", "scripts/benchmark.ps1")) {
+    Assert-Condition (Test-Path -LiteralPath $path) "required file exists: $path"
+  }
+
+  $files = @(Get-ChildItem -LiteralPath $repoRoot -Recurse -File -Force | Where-Object { $_.Extension -eq ".mbt" -and $_.FullName -notmatch "[\\/](?:_build|target|\.git|\.mooncakes|\.moonagent)[\\/]" })
+  $production = @($files | Where-Object { $_.Name -notmatch "_test\.mbt$" -and $_.Name -notmatch "_wbtest\.mbt$" })
+  $tests = @($files | Where-Object { $_.Name -match "_test\.mbt$|_wbtest\.mbt$" })
+  $productionLines = (($production | Get-Content | Measure-Object -Line).Lines)
+  $testLines = (($tests | Get-Content | Measure-Object -Line).Lines)
+  $totalLines = (($files | Get-Content | Measure-Object -Line).Lines)
+
+  Assert-Condition ($productionLines -ge 4000) "production MoonBit lines >= 4000 (actual: $productionLines)"
+  Assert-Condition ($tests.Count -ge 40) "test file count >= 40 (actual: $($tests.Count))"
+  Assert-Condition ((Get-Content README.md -Raw).Contains("8 月黑客松")) "README identifies the August Hackathon"
+  Assert-Condition ((Get-Content README.md -Raw).Contains("benchmarks/latest.md")) "README links measured benchmark evidence"
+  Assert-Condition ((Get-Content README.md -Raw).Contains("Apache License 2.0")) "README states the project license"
+  Assert-Condition ((Get-Content OSC2026_Hackathon_Proposal.md -Raw).Contains("8月黑客松")) "proposal identifies the August Hackathon"
+  Assert-Condition ((Get-Content .github/workflows/ci.yml -Raw).Contains("--target all")) "CI covers all stable targets"
+  Assert-Condition ((Get-Content .github/workflows/ci.yml -Raw).Contains("moon update")) "CI updates dependencies"
+  Assert-Condition ((Get-Content .github/workflows/ci.yml -Raw).Contains("moon info")) "CI checks generated interfaces"
+  Assert-Condition ((Get-Content .github/workflows/publish.yml -Raw).Contains("moon publish")) "publish workflow invokes Mooncakes"
+  Assert-Condition ((Get-Content .github/workflows/publish.yml -Raw).Contains("MOONCAKES_TOKEN")) "publish workflow uses a secret"
+
+  if (-not $SkipMoonCommands) {
+    Invoke-Moon @("fmt", "--check")
+    Invoke-Moon @("check", "--deny-warn")
+    Invoke-Moon @("test", "--deny-warn")
+  }
+
+  Write-Output "SUMMARY: production=$productionLines test=$testLines total=$totalLines test_files=$($tests.Count)"
+}
+finally {
+  Pop-Location
+}

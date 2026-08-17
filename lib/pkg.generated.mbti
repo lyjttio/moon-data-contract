@@ -7,7 +7,11 @@ import {
 }
 
 // Values
+pub fn analyze_schema(Schema) -> AuditMetrics
+
 pub fn apply_patch_to_schema(Schema, SchemaPatch) -> Schema
+
+pub fn audit_contract(Schema, Schema, Map[String, FieldValue], CompatibilityLevel) -> ContractAudit
 
 pub fn batch_compare_schemas(Array[Schema], Array[Schema]) -> Array[BatchCompareResult]
 
@@ -57,6 +61,14 @@ pub fn lint_contract_schema(Schema) -> Array[LintIssue]
 
 pub fn print_contract_spec(Schema) -> String
 
+pub fn profile_schema(Schema) -> SchemaProfile
+
+pub fn run_standard_benchmark() -> BenchmarkReport
+
+pub fn run_workload(BenchmarkWorkload) -> BenchmarkMeasurement
+
+pub fn standard_benchmark_workloads() -> Array[BenchmarkWorkload]
+
 pub fn tokenize_expression(String) -> Array[TokenType]
 
 pub fn validate_field_value(Field, FieldValue?) -> Array[ValidationError]
@@ -99,11 +111,69 @@ pub(all) enum AstNodeType {
   NodeConstraint
 } derive(Eq, @debug.Debug)
 
+pub(all) struct AuditFinding {
+  code : String
+  severity : AuditSeverity
+  field_name : String
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct AuditMetrics {
+  top_level_fields : Int
+  total_fields : Int
+  max_depth : Int
+  constrained_fields : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) enum AuditSeverity {
+  AuditInfo
+  AuditWarning
+  AuditError
+} derive(Eq, @debug.Debug)
+pub fn AuditSeverity::to_string(Self) -> String
+
 pub(all) struct BatchCompareResult {
   subject_a : String
   subject_b : String
   is_identical : Bool
   diff_count : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct BenchmarkMeasurement {
+  name : String
+  iterations : Int
+  operations : Int
+  elapsed_us : Double
+  valid_count : Int
+  invalid_count : Int
+} derive(Eq, @debug.Debug)
+pub fn BenchmarkMeasurement::is_consistent(Self) -> Bool
+pub fn BenchmarkMeasurement::throughput(Self) -> Double
+
+pub(all) enum BenchmarkOperation {
+  Validate
+  Diff
+  Compatibility
+} derive(Eq, @debug.Debug)
+
+pub(all) struct BenchmarkReport {
+  measurements : Array[BenchmarkMeasurement]
+  total_operations : Int
+  total_elapsed_us : Double
+} derive(Eq, @debug.Debug)
+pub fn BenchmarkReport::measurement_count(Self) -> Int
+pub fn BenchmarkReport::to_json(Self) -> String
+pub fn BenchmarkReport::to_markdown(Self) -> String
+pub fn BenchmarkReport::total_elapsed(Self) -> Double
+pub fn BenchmarkReport::total_throughput(Self) -> Double
+
+pub(all) struct BenchmarkWorkload {
+  name : String
+  iterations : Int
+  schema : Schema
+  next_schema : Schema
+  payload : Map[String, FieldValue]
+  operation : BenchmarkOperation
 } derive(Eq, @debug.Debug)
 
 pub(all) enum BreakingCategory {
@@ -153,6 +223,28 @@ pub(all) struct ContractAstNode {
   children : Array[ContractAstNode]
 } derive(Eq, @debug.Debug)
 pub fn ContractAstNode::new(AstNodeType, String, children? : Array[Self]) -> Self
+
+pub(all) struct ContractAudit {
+  schema_id : String
+  from_version : String
+  to_version : String
+  checked_fields : Int
+  payload_valid : Bool
+  compatible : Bool
+  recommended_bump : String
+  is_ready : Bool
+  metrics : AuditMetrics
+  profile : SchemaProfile
+  findings : Array[AuditFinding]
+} derive(Eq, @debug.Debug)
+pub fn ContractAudit::error_count(Self) -> Int
+pub fn ContractAudit::has_code(Self, String) -> Bool
+pub fn ContractAudit::profile_complexity(Self) -> Int
+pub fn ContractAudit::profile_required_ratio(Self) -> Double
+pub fn ContractAudit::risk_score(Self) -> Int
+pub fn ContractAudit::to_json(Self) -> String
+pub fn ContractAudit::to_markdown(Self) -> String
+pub fn ContractAudit::warning_count(Self) -> Int
 
 pub(all) struct DataGovernanceTag {
   category : PiiCategory
@@ -333,6 +425,23 @@ pub(all) enum SchemaPatchOp {
   OpUpdateFieldRequired(String, Bool)
 } derive(Eq, @debug.Debug)
 
+pub(all) struct SchemaProfile {
+  total_fields : Int
+  required_fields : Int
+  optional_fields : Int
+  bool_fields : Int
+  int_fields : Int
+  double_fields : Int
+  string_fields : Int
+  composite_fields : Int
+  max_depth : Int
+} derive(Eq, @debug.Debug)
+pub fn SchemaProfile::complexity_score(Self) -> Int
+pub fn SchemaProfile::primitive_fields(Self) -> Int
+pub fn SchemaProfile::required_ratio(Self) -> Double
+pub fn SchemaProfile::to_json(Self) -> String
+pub fn SchemaProfile::to_markdown(Self) -> String
+
 pub(all) struct SchemaRegistry {
   schemas : Map[String, Array[Schema]]
   default_level : CompatibilityLevel
@@ -383,4 +492,3 @@ pub fn VersionRange::at_least(@types.SemVer) -> Self
 // Type aliases
 
 // Traits
-

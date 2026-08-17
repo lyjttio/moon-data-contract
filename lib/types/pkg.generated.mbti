@@ -132,4 +132,3 @@ pub fn StringRule::default() -> Self
 // Type aliases
 
 // Traits
-

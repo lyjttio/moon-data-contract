@@ -6,6 +6,8 @@ pub(all) enum CliCommand {
   CmdDiff(String, String)
   CmdCheck(String, String, String)
   CmdExport(String, String)
+  CmdBenchmark
+  CmdAudit
   CmdHelp
   CmdVersion
 } derive(Debug, Eq)
@@ -45,6 +47,8 @@ pub fn parse_cli_args(args : Array[String]) -> CliCommand {
         CmdHelp
       }
     }
+    "benchmark" => CmdBenchmark
+    "audit" => CmdAudit
     "version" | "-v" | "--version" => CmdVersion
     _ => CmdHelp
   }
