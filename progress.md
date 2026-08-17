@@ -29,3 +29,4 @@
 - Task 4 已完成 TDD：先观察 Governance API 缺失失败，再实现空链/兼容链/阻断链的治理编排、发布状态、风险分数、阻断 findings 和迁移指标；修正共享测试夹具后 `moon test --deny-warn` 通过 72/72，`moon check --deny-warn` 和 `moon info` 通过。
 - Task 5 已完成 TDD：先观察报告 API 缺失失败，再实现确定性的 Markdown、JSON、JUnit 输出及 JSON/XML 转义；`moon test --deny-warn` 通过 75/75，`moon check --deny-warn`、`moon info` 和 `git diff --check` 通过。
 - Task 6 已完成 TDD：先观察新增 benchmark/CLI API 缺失失败，再接入 Snapshot/Policy/Migration/Governance/Report 实际路径；新增范围查询、策略档案、迁移渲染、审批台账、治理差异、契约目录、报告路由、风险分级、审计摘要、trace、检查清单和发布建议等可复用离线能力。`moon test --deny-warn` 通过 96/96，生产源码精确统计 7,200 行，测试源码 1,724 行，测试文件 61 个；验收脚本已升级为 7,200–7,600 行并检查四个治理 benchmark workload 与四个 CLI 命令。
+- Task 7 文档与版本已更新：`moon.mod` 为 `0.2.0`，README/申报书/benchmark 说明同步当前实测 7,200/1,725/8,925 指标、96/96 测试、8 个 workload 和 4 个治理 CLI。`moon update` 在提升权限后成功刷新 stable registry；全目标 check 通过，wasm/wasm-gc/js 三目标测试通过，Windows 本机 native 仍受 MinGW 缺少 `rand_s` 影响，Ubuntu CI native job 负责覆盖。

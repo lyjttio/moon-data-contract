@@ -39,7 +39,7 @@ pub fn run_cli_command(
   match cmd {
     CmdHelp => print_help_menu()
     CmdVersion =>
-      "moon-data-contract version 0.1.0 (MoonBit stable toolchain)\n"
+      "moon-data-contract version 0.2.0 (MoonBit stable toolchain)\n"
     CmdBenchmark => @lib.run_standard_benchmark().to_markdown()
     CmdAudit => {
       let workload = @lib.standard_benchmark_workloads()[0]

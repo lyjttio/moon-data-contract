@@ -15,7 +15,8 @@
 - Schema 演化：AST Diff、破坏性变更识别、兼容性等级、传递兼容性和迁移矩阵。
 - 注册与生成：Schema Registry、缓存、文件存储、依赖 DAG、SQL/Proto/TypeScript/Avro/Graphviz/Mock 导出。
 - 工程化审计：确定性 benchmark、结构化 Contract Audit、嵌套 Schema Profile、Markdown/JSON/JUnit/HTML 报告。
-- CLI：`benchmark` 和 `audit` 可直接用于验收或 CI；`validate`、`diff`、`check`、`export` 提供参数解析和可审计的预览入口。便携 CLI 尚未解码 JSON 文件，生产集成应直接调用库 API。
+- 离线治理：Schema 快照链、完整性校验、策略档案与矩阵、迁移/回滚计划、审批台账、风险分级、发布检查清单、治理 trace 和可执行建议。
+- CLI：`benchmark`、`audit`、`govern`、`snapshot`、`plan`、`policy` 可直接用于验收或 CI；`validate`、`diff`、`check`、`export` 提供参数解析和可审计的预览入口。便携 CLI 尚未解码 JSON 文件，生产集成应直接调用库 API。
 
 ## 目录结构
 
@@ -34,7 +35,7 @@ moon-data-contract/
 ├── .github/workflows/
 │   ├── ci.yml
 │   └── publish.yml
-├── lib/                  # 核心库与 59 个测试
+├── lib/                  # 核心库与 61 个测试
 └── cmd/main/             # 可执行 CLI
 ```
 
@@ -42,13 +43,13 @@ moon-data-contract/
 
 以下数字由 `scripts/verify_acceptance.ps1` 和 `moon test` 实测生成，统计 `.mbt` 扩展名并排除 `_build`、缓存和生成目录：
 
-- 生产 MoonBit 源码：**4,063 行**（61 个文件）。
-- 测试 MoonBit 源码：**1,064 行**（41 个文件）。
-- MoonBit 源码总量：**5,127 行**。
-- 测试结果：**59/59 通过**。
+- 生产 MoonBit 源码：**7,200 行**（验收脚本精确统计 `.mbt`，排除测试、`.mbti`、缓存和构建产物）。
+- 测试 MoonBit 源码：**1,725 行**（61 个测试文件）。
+- MoonBit 源码总量：**8,925 行**。
+- 测试结果：**96/96 通过**。
 - 本地工具链：`moon 0.1.20260807`，`moonc v0.10.7+bc794d341`，稳定编译器线 `0.10.7`。
 
-Benchmark 结果见 [`benchmarks/latest.md`](benchmarks/latest.md)。该文件记录了本机 Windows、wasm-gc 目标、520 次契约操作/次和 5 次 wall-clock 样本；数据是实测证据，不是跨机器性能承诺。刷新命令：
+Benchmark 结果见 [`benchmarks/latest.md`](benchmarks/latest.md)。当前证据记录本机 Windows、wasm-gc 目标、792 次契约操作/次、四类治理 workload 和 5 次 wall-clock 样本；MoonBit 核心计时为本机实测值，不是跨机器性能承诺。刷新命令：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/benchmark.ps1 -Runs 5
@@ -61,6 +62,10 @@ moon check --deny-warn
 moon test --deny-warn
 moon run cmd/main -- benchmark
 moon run cmd/main -- audit
+moon run cmd/main -- govern
+moon run cmd/main -- snapshot
+moon run cmd/main -- plan
+moon run cmd/main -- policy
 ```
 
 全目标验证：
@@ -79,7 +84,7 @@ powershell -ExecutionPolicy Bypass -File scripts/verify_acceptance.ps1
 
 ## 边界测试
 
-测试覆盖空 Schema、重复字段、缺失必填字段、类型变化、可选字段增加、嵌套 Struct、Unicode 字段、约束上下界、非法版本、缓存边界、循环依赖、宽 Schema 和混合有效/无效 Payload。测试使用真实核心实现，不使用 mock 替代校验或 Diff 逻辑。
+测试覆盖空 Schema、重复字段、缺失必填字段、类型变化、可选字段增加、嵌套 Struct、Unicode 字段、约束上下界、非法版本、快照重复/跳跃/撤销、策略例外、迁移回滚、审批台账、风险边界、循环依赖、宽 Schema 和混合有效/无效 Payload。测试使用真实核心实现，不使用 mock 替代校验或 Diff 逻辑。
 
 ## CI 与发布
 

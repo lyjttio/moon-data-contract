@@ -16,9 +16,13 @@ The benchmark is intended to compare revisions on the same machine. It is not
 a cross-machine performance promise: build caches, CPU frequency scaling and
 background load can affect wall-clock results.
 
-The MoonBit benchmark itself contains four application workloads:
+The MoonBit benchmark itself contains eight application workloads:
 
 - validating a small contract;
 - validating a 24-field contract;
 - diffing a compatible schema evolution;
 - checking backward compatibility for the same evolution.
+- scanning a four-version snapshot chain;
+- evaluating a strict governance policy;
+- planning a real schema migration;
+- rendering a Markdown governance release report.

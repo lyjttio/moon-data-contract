@@ -1,6 +1,6 @@
 name = "lyjttio/moon-data-contract"
 
-version = "0.1.0"
+version = "0.2.0"
 
 readme = "README.md"
 
@@ -12,4 +12,4 @@ keywords = [ "schema", "data-contract", "evolution", "validation", "json" ]
 
 preferred_target = "wasm-gc"
 
-description = "MoonBit Data Contract & Schema Evolution Tool - Defining data contracts, validating schema constraints, detecting breaking changes, and enforcing evolution rules."
+description = "MoonBit Data Contract & Schema Evolution Tool - Validating contracts, governing schema evolution, planning migrations, and enforcing deterministic release gates."

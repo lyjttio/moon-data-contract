@@ -74,6 +74,7 @@ test "cli: execute user arguments through the public entrypoint" {
   assert_true(benchmark_output.contains("Total operations"))
   let help_output = execute_cli_args([])
   assert_true(help_output.contains("Usage:"))
+  assert_true(execute_cli_args(["version"]).contains("0.2.0"))
   assert_true(
     execute_cli_args(["govern"]).contains("Contract Governance Report"),
   )

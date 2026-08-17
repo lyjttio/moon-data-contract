@@ -8,7 +8,7 @@
 
 ## 目标
 
-把 `moon-data-contract` 完成到可验收、可复现、可发布的结项状态：以有实际应用价值的功能把有效生产 MoonBit 源码提升到至少 4,000 行，补齐真实基准数据与边界测试，按最新 stable MoonBit 工具链完善 CI，修正文档赛事定位，完成 GitHub 默认分支/唯一贡献者/远程账号核验，并通过 Mooncakes 发布流程。
+把 `moon-data-contract` 完成到可验收、可复现、可发布的结项状态：以有实际应用价值的功能把有效生产 MoonBit 源码提升到 7,200–7,600 行，补齐真实基准数据与边界测试，按最新 stable MoonBit 工具链完善 CI，修正文档赛事定位，完成 GitHub 默认分支/唯一贡献者/远程账号核验，并通过 Mooncakes 发布流程。
 
 ## 阶段
 
@@ -32,7 +32,7 @@
 
 ## 成功标准
 
-- 生产 `.mbt` 行数 >= 4,000，且新增代码属于可复用功能而非注释/填充。
+- 生产 `.mbt` 行数在 7,200–7,600，且新增代码属于可复用功能而非注释/填充。
 - `moon check --deny-warn`、`moon test --deny-warn`、格式化检查、`moon info` 和至少一个稳定后端构建通过。
 - CI 使用稳定版安装脚本并覆盖 Linux/macOS/Windows，执行 target-all 检查和测试。
 - README、申报书与实际命令输出一致，包含可运行示例、真实 benchmark 数据、边界测试说明和 Mooncakes 发布信息。

@@ -72,3 +72,11 @@
 - 当前生产规模为 4,063 行，新增 3,000–3,500 行即可进入 7,200–7,600 行目标区间。
 - 现有根 `lib` 已依赖公开 `lib/types`，可复用 `@types.SemVer`、`Schema`、`DiffEntry`、`check_compatibility` 和 Registry，不需要新增第三方依赖。
 - 由于 CLI 文件解析尚未实现，治理命令将采用确定性内置样例和库 API；文档必须明确这一边界。
+
+## 2026-08-18 扩展结项证据
+
+- 治理扩展已提交到本地 `189904c`：生产 `.mbt` 精确 7,200 行，测试源码 1,725 行，总量 8,925 行，测试文件 61 个。
+- `moon test --deny-warn`：96/96；`moon check --deny-warn`、`moon fmt --check`、`moon info` 和 `moon check --deny-warn --target all` 通过。
+- `moon test --deny-warn --target all` 的 wasm、wasm-gc、js 均 96/96；Windows 本机 native 仍因 MinGW runtime 缺少 `rand_s` 失败，CI 的 Ubuntu native job 保持覆盖。
+- `scripts/verify_acceptance.ps1` 完整通过，输出 `production=7200 test=1725 total=8925 test_files=61`；`scripts/benchmark.ps1 -Runs 5` 通过，记录 792 operations/run、四个治理 workload 和 5 次 wall-clock 样本。
+- `moon update` 提升权限后成功更新 registry index 与 symbols；`moon.mod` 已升级到 `0.2.0`，CLI version 输出同步为 `0.2.0`。
