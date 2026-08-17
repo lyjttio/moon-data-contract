@@ -1,6 +1,8 @@
 ///|
 fn snapshot_fixture(version : String) -> Schema {
-  Schema::new("orders", "Orders", version, "fixture", [])
+  Schema::new("orders", "Orders", version, "fixture", [
+    Field::new("id", Primitive(TInt), primary_key=true),
+  ])
 }
 
 ///|

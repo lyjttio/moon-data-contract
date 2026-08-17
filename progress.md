@@ -26,3 +26,4 @@
 - Task 1 已完成 TDD：先观察 Snapshot 测试因类型缺失而失败，再实现不可变快照 Store、SemVer 排序、重复/非法版本拒绝和版本链问题分析；`moon test --deny-warn` 通过 62/62，`moon check --deny-warn` 通过，`moon info` 已生成接口。
 - Task 2 已完成 TDD：先观察 Policy API 缺失失败，再实现 strict/permissive 策略、规则 finding、阻断决策、精确例外匹配和稳定排序；`moon test --deny-warn` 通过 65/65，`moon check --deny-warn` 和 `moon info` 通过。
 - Task 3 已完成 TDD：先观察 Migration API 缺失失败，再实现可自动/人工/不安全动作分类、类型扩展/收窄识别、确定性动作排序和回滚问题检查；`moon test --deny-warn` 通过 68/68，`moon check --deny-warn` 和 `moon info` 通过。
+- Task 4 已完成 TDD：先观察 Governance API 缺失失败，再实现空链/兼容链/阻断链的治理编排、发布状态、风险分数、阻断 findings 和迁移指标；修正共享测试夹具后 `moon test --deny-warn` 通过 72/72，`moon check --deny-warn` 和 `moon info` 通过。
