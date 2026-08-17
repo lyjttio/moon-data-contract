@@ -57,10 +57,12 @@
 - `moon fmt` 和 `moon info` 已运行；`lib/pkg.generated.mbti` 等接口文件的新增公开 API diff 与审计/benchmark/Schema Profile 功能一致。
 - 代码审查反馈已核实并处理：benchmark 文档改为 5 个样本且说明 Windows 使用 wasm-gc；CI native job 增加 native tests；Mooncakes workflow 限制为 `main` 并要求输入版本与 `moon.mod` 一致。
 - 首次 CI 的 Ubuntu、macOS、native job 均通过；Windows 因下载 `msys2/setup-msys2` 被 GitHub codeload HTTP 429 限流。为消除该外部下载门禁，Windows 改为 wasm/wasm-gc/js 可移植目标，native 由 Ubuntu job 覆盖。
+- 最终 CI run `32042535409` 已通过：Ubuntu、macOS、Windows portable targets、Ubuntu native build 全部成功；仅有 GitHub Actions Node.js 20 deprecation annotation。
+- GitHub 仓库查询确认 owner=`lyjttio`、default branch=`main`；`moon whoami` 确认 Mooncakes=`lyjttio`；`moon publish` 返回 Server status `200 OK`，已发布 `lyjttio/moon-data-contract` `0.1.0`。
 
 ## 错误记录
 
 - `gh auth status` 无法读取 GitHub CLI 配置，提示 Access is denied；最终推送前需要在授权环境直接核验。
-- 当前 `gh api user` 多次返回 GitHub API HTTP 503，因此尚未把 GitHub 身份核验标记为完成；`moon whoami` 已直接确认 `lyjttio`，`git ls-remote origin main` 已确认 GitHub 远程的当前 `main` ref。
+- `gh api user` 曾多次返回 GitHub API HTTP 503，但 `gh repo view` 随后直接确认 owner=`lyjttio`、default branch=`main`；结合精确远程 dry-run/push 成功，GitHub 目标核验完成。
 - 两个赛事 URL 被网页工具判定为不安全；已改用公开原始文件和搜索结果，未把未验证页面内容当作事实。
 - `git add` / `git commit` 无法创建 `.git/index.lock`，提示 Permission denied；提交和推送阶段需要使用提升权限命令。

@@ -15,3 +15,5 @@
 - 完成 README、黑客松申报书、验收脚本、贡献/安全说明、三平台 CI 和手动 Mooncakes 发布 workflow。
 - `moon update` 首次因 registry 目录权限失败，提升权限后成功更新 registry index 和 symbols。
 - 验收脚本曾因 PowerShell `*.mbt` 通配符把 `.mbti` 计入源码，已改为精确扩展名 `.mbt` 并验证 production=4063、test=1064、total=5127。
+- 提交 `9d75de4` 推送后，CI 首次运行遇到 Windows action 下载 429；提交 `43c0c7e` 移除该外部依赖并改为 Windows portable targets，最终 CI run `32042535409` 全部通过。
+- GitHub owner/default branch 核验为 `lyjttio`/`main`；Mooncakes `moon whoami` 为 `lyjttio`，正式 `moon publish` 返回 200 OK。

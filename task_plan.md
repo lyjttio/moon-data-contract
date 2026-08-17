@@ -19,10 +19,10 @@
 4. **CI、文档与发布准备** — complete
    - 升级到最新 stable 安装流程；加入 check/test/build/format/info/coverage 等必要门禁。
    - 检查根目录结构、许可证、默认分支、贡献者、敏感信息和 Mooncakes 元数据。
-5. **最终验证、审查与推送** — in_progress
+5. **最终验证、审查与推送** — complete
     - 运行完整本地命令并检查 diff/mbti/规模。
     - 请求只读代码审查，修复重要问题；已修正 benchmark 文档、native 测试门禁和发布分支/版本保护。
-    - 核验 `gh` 当前账号、远程默认分支和 Mooncakes 登录身份后提交、推送、发布。
+    - 核验 GitHub 仓库 owner/default branch、Mooncakes 登录身份后提交、推送、发布；GitHub API user endpoint 曾短暂 503，但仓库 owner 查询已确认 `lyjttio`。
 
 ## 成功标准
 
