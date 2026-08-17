@@ -83,7 +83,7 @@ powershell -ExecutionPolicy Bypass -File scripts/verify_acceptance.ps1
 
 ## CI 与发布
 
-GitHub Actions 在 Ubuntu、macOS 和 Windows 上安装最新 stable MoonBit，执行 `moon update`、`moon check --target all`、`moon test --target all`、格式化 diff 和 `moon info` 接口 diff。发布 workflow 仅支持手工触发，先完成 check/test，再使用 GitHub Secret `MOONCAKES_TOKEN` 发布到 Mooncakes，并在步骤结束后清理凭据。
+GitHub Actions 在 Ubuntu、macOS 和 Windows 上安装最新 stable MoonBit；Unix runner 执行 `moon check/test --target all`，Windows 执行 wasm、wasm-gc、js 三个可移植目标，另有 Ubuntu native build/test 门禁。所有平台都执行 `moon update`、格式化 diff 和 `moon info` 接口 diff。发布 workflow 仅支持手工触发，先完成 check/test，再使用 GitHub Secret `MOONCAKES_TOKEN` 发布到 Mooncakes，并在步骤结束后清理凭据。
 
 ## 许可证与贡献
 

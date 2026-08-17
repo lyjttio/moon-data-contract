@@ -40,29 +40,37 @@ jobs:
           irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
           "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Install Windows native prerequisites
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: UCRT64
-          update: true
-          install: >-
-            mingw-w64-ucrt-x86_64-gcc
-            mingw-w64-ucrt-x86_64-openssl
-
       - name: Update dependencies
         shell: bash
         run: |
           moon version --all
           moon update
 
-      - name: Check all stable targets
+      - name: Check all stable targets (Unix)
+        if: runner.os != 'Windows'
         shell: bash
         run: moon check --deny-warn --target all
 
-      - name: Test all stable targets
+      - name: Check portable targets (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          moon check --deny-warn --target wasm
+          moon check --deny-warn --target wasm-gc
+          moon check --deny-warn --target js
+
+      - name: Test all stable targets (Unix)
+        if: runner.os != 'Windows'
         shell: bash
         run: moon test --deny-warn --target all
+
+      - name: Test portable targets (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          moon test --deny-warn --target wasm
+          moon test --deny-warn --target wasm-gc
+          moon test --deny-warn --target js
 
       - name: Check formatting and generated interfaces
         shell: bash
