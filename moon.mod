@@ -1,6 +1,6 @@
 name = "lyjttio/moon-data-contract"
 
-version = "0.2.0"
+version = "0.2.1"
 
 readme = "README.md"
 
@@ -8,8 +8,17 @@ repository = "https://github.com/lyjttio/moon-data-contract"
 
 license = "Apache-2.0"
 
-keywords = [ "schema", "data-contract", "evolution", "validation", "json" ]
+keywords = [
+  "moonbit",
+  "schema",
+  "data-contract",
+  "schema-evolution",
+  "governance",
+  "migration",
+  "validation",
+  "ci",
+]
 
 preferred_target = "wasm-gc"
 
-description = "MoonBit Data Contract & Schema Evolution Tool - Validating contracts, governing schema evolution, planning migrations, and enforcing deterministic release gates."
+description = "Deterministic schema governance for MoonBit: validate contracts, audit evolution, plan migrations, and enforce release gates."
