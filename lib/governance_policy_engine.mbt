@@ -67,7 +67,11 @@ fn finding_for_diff(
       }
     FieldRemoved(_) => ("field-removed", 10, Error, !policy.allow_removals)
     TypeChanged(_, _) =>
-      ("type-changed", 8, Warning, !policy.allow_type_changes)
+      if policy.allow_type_changes {
+        ("type-changed", 8, Info, false)
+      } else {
+        ("type-changed", 8, Warning, true)
+      }
     RequiredChanged(_, required) =>
       if required {
         ("required-field-added", 10, Error, !policy.allow_required_additions)
@@ -75,7 +79,11 @@ fn finding_for_diff(
         ("required-field-relaxed", 2, Info, false)
       }
     ConstraintChanged(_, _) =>
-      ("constraint-changed", 5, Warning, !policy.allow_constraint_changes)
+      if policy.allow_constraint_changes {
+        ("constraint-changed", 5, Info, false)
+      } else {
+        ("constraint-changed", 5, Warning, true)
+      }
   }
   let exception_applied = exception_for(
     policy,
@@ -83,10 +91,15 @@ fn finding_for_diff(
     diff.field_name,
     rule_id,
   )
+  let effective_severity = if exception_applied && severity == Warning {
+    PolicySeverity::Info
+  } else {
+    severity
+  }
   {
     rule_id,
     field_name: diff.field_name,
-    severity,
+    severity: effective_severity,
     blocking: default_blocking && !exception_applied,
     exception_applied,
     risk_score,
@@ -106,7 +119,24 @@ pub fn evaluate_policy(
   for diff in compatibility.diffs {
     findings.push(finding_for_diff(policy, base.id, diff))
   }
-  sorted_policy_findings(findings)
+  let evaluated = sorted_policy_findings(findings)
+  let mut risk_score = 0
+  for finding in evaluated {
+    risk_score += finding.risk_score
+  }
+  if risk_score > policy.max_risk_score {
+    evaluated.push({
+      rule_id: "risk-budget-exceeded",
+      field_name: "~policy",
+      severity: Error,
+      blocking: true,
+      exception_applied: false,
+      risk_score: risk_score - policy.max_risk_score,
+      message: "Policy risk budget exceeded by " +
+      (risk_score - policy.max_risk_score).to_string(),
+    })
+  }
+  sorted_policy_findings(evaluated)
 }
 
 ///|

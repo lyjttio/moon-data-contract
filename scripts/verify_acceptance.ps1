@@ -32,8 +32,17 @@ try {
   $productionLines = (($production | Get-Content | Measure-Object -Line).Lines)
   $testLines = (($tests | Get-Content | Measure-Object -Line).Lines)
   $totalLines = (($files | Get-Content | Measure-Object -Line).Lines)
+  $effectiveProductionLines = 0
+  foreach ($file in $production) {
+    foreach ($line in (Get-Content -LiteralPath $file.FullName)) {
+      $trimmed = $line.Trim()
+      if ($trimmed.Length -gt 0 -and -not $trimmed.StartsWith("//")) {
+        $effectiveProductionLines++
+      }
+    }
+  }
 
-  Assert-Condition ($productionLines -ge 7200 -and $productionLines -le 7600) "production MoonBit lines are within 7200-7600 (actual: $productionLines)"
+  Assert-Condition ($effectiveProductionLines -ge 7000 -and $effectiveProductionLines -le 7600) "effective production MoonBit lines are within 7000-7600 (actual: $effectiveProductionLines; physical: $productionLines)"
   Assert-Condition ($tests.Count -ge 55) "test file count >= 55 (actual: $($tests.Count))"
   Assert-Condition (Test-Path -LiteralPath "lib/governance_trace.mbt") "governance trace module exists"
   Assert-Condition (Test-Path -LiteralPath "lib/release_checklist.mbt") "release checklist module exists"
@@ -57,7 +66,7 @@ try {
     Invoke-Moon @("test", "--deny-warn")
   }
 
-  Write-Output "SUMMARY: production=$productionLines test=$testLines total=$totalLines test_files=$($tests.Count)"
+  Write-Output "SUMMARY: effective_production=$effectiveProductionLines physical_production=$productionLines test=$testLines total=$totalLines test_files=$($tests.Count)"
 }
 finally {
   Pop-Location

@@ -2,13 +2,13 @@
 
 ## 2026-08-18 扩展目标
 
-在已完成 4,063 行生产源码的基础上，按申报书方向实现离线数据契约治理流水线，目标生产源码 7,200–7,600 行。具体范围、接口边界、测试策略和发布约束见 [`docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md`](docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md)。实施计划见 [`docs/superpowers/plans/2026-08-18-contract-governance-expansion.md`](docs/superpowers/plans/2026-08-18-contract-governance-expansion.md)。
+在已完成 4,063 行生产源码的基础上，按申报书方向实现离线数据契约治理流水线，目标有效生产源码 7,000–7,600 行，物理生产行保持在 7–8 千范围。具体范围、接口边界、测试策略和发布约束见 [`docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md`](docs/superpowers/specs/2026-08-18-contract-governance-expansion-design.md)。实施计划见 [`docs/superpowers/plans/2026-08-18-contract-governance-expansion.md`](docs/superpowers/plans/2026-08-18-contract-governance-expansion.md)。
 
 当前执行状态：Task 1 Snapshot、Task 2 Policy、Task 3 Migration、Task 4 Governance、Task 5 Report、Task 6 CLI/Benchmark 已完成；Task 7 文档与发布准备进行中。
 
 ## 目标
 
-把 `moon-data-contract` 完成到可验收、可复现、可发布的结项状态：以有实际应用价值的功能把有效生产 MoonBit 源码提升到 7,200–7,600 行，补齐真实基准数据与边界测试，按最新 stable MoonBit 工具链完善 CI，修正文档赛事定位，完成 GitHub 默认分支/唯一贡献者/远程账号核验，并通过 Mooncakes 发布流程。
+把 `moon-data-contract` 完成到可验收、可复现、可发布的结项状态：以有实际应用价值的功能把有效生产 MoonBit 源码提升到 7,000–7,600 行，补齐真实基准数据与边界测试，按最新 stable MoonBit 工具链完善 CI，修正文档赛事定位，完成 GitHub 默认分支/唯一贡献者/远程账号核验，并通过 Mooncakes 发布流程。
 
 ## 阶段
 
@@ -32,7 +32,7 @@
 
 ## 成功标准
 
-- 生产 `.mbt` 行数在 7,200–7,600，且新增代码属于可复用功能而非注释/填充。
+- 有效生产 `.mbt` 行数在 7,000–7,600，物理生产行保持 7–8 千，且新增代码属于可复用功能而非注释/填充。
 - `moon check --deny-warn`、`moon test --deny-warn`、格式化检查、`moon info` 和至少一个稳定后端构建通过。
 - CI 使用稳定版安装脚本并覆盖 Linux/macOS/Windows，执行 target-all 检查和测试。
 - README、申报书与实际命令输出一致，包含可运行示例、真实 benchmark 数据、边界测试说明和 Mooncakes 发布信息。

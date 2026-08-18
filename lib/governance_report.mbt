@@ -35,6 +35,10 @@ pub fn GovernanceResult::to_markdown(self : GovernanceResult) -> String {
     "- **Blocking findings**: " +
     self.metrics.blocking_count.to_string() +
     "\n\n"
+  output = output +
+    "- **Integrity issues**: " +
+    self.metrics.integrity_issue_count.to_string() +
+    "\n\n"
   output = output + "## Findings\n\n"
   if self.findings.length() == 0 {
     output = output + "No policy findings.\n\n"
@@ -119,7 +123,43 @@ pub fn GovernanceResult::to_json(self : GovernanceResult) -> String {
       policy_severity_text(finding.severity) +
       "\",\"blocking\":" +
       finding.blocking.to_string() +
+      ",\"exception_applied\":" +
+      finding.exception_applied.to_string() +
+      ",\"risk_score\":" +
+      finding.risk_score.to_string() +
+      ",\"message\":\"" +
+      json_escape(finding.message) +
       "}"
+  }
+  output = output + "],\n  \"migration_plans\": ["
+  for i, plan in self.migration_plans {
+    if i > 0 {
+      output = output + ","
+    }
+    output = output +
+      "{\"base_version\":\"" +
+      json_escape(plan.base_version) +
+      "\",\"target_version\":\"" +
+      json_escape(plan.target_version) +
+      "\",\"actions\":["
+    for j, action in plan.actions {
+      if j > 0 {
+        output = output + ","
+      }
+      output = output +
+        "{\"field\":\"" +
+        json_escape(action.field_name) +
+        "\",\"kind\":\"" +
+        migration_kind_text(action.kind) +
+        "\",\"safety\":\"" +
+        migration_safety_text(action.safety) +
+        "\",\"reversible\":" +
+        action.reversible.to_string() +
+        ",\"reason\":\"" +
+        json_escape(action.reason) +
+        "\"}"
+    }
+    output = output + "]}"
   }
   output + "]\n}"
 }

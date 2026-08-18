@@ -28,7 +28,7 @@
 
 ## 工程指标
 
-当前实测生产 MoonBit 源码 7,200 行、测试源码 1,725 行、总量 8,925 行；测试 96/96 通过，测试文件 61 个。CI 覆盖 Ubuntu、macOS 的全目标 check/test、Windows 的 wasm/wasm-gc/js 可移植目标，以及 Ubuntu native build/test；验收脚本检查源码口径、文档、许可证、CI 标记、治理 CLI 和核心 MoonBit 命令。实测 benchmark 保存在 `benchmarks/latest.md`，并记录工具链、目标后端、792 次操作、治理 workload、样本规模和运行结果。
+当前实测有效生产 MoonBit 源码 7,020 行、物理生产行 7,560 行、测试源码 1,971 行、总量 9,531 行；测试 104/104 通过，测试文件 62 个。CI 覆盖 Ubuntu、macOS 的全目标 check/test、Windows 的 wasm/wasm-gc/js 可移植目标，以及 Ubuntu native build/test；验收脚本检查有效源码口径、文档、许可证、CI 标记、治理 CLI 和核心 MoonBit 命令。实测 benchmark 保存在 `benchmarks/latest.md`，并记录工具链、目标后端、792 次操作、治理 workload、样本规模和运行结果。
 
 ## 应用价值与后续方向
 

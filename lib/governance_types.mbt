@@ -14,6 +14,7 @@ pub(all) struct GovernanceMetrics {
   blocking_count : Int
   automatic_migrations : Int
   manual_migrations : Int
+  integrity_issue_count : Int
   risk_score : Int
 } derive(Debug, Eq)
 

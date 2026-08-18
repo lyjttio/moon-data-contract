@@ -7,6 +7,6 @@ test "risk bands and metric summaries are bounded" {
     CompatibilityLevel::Backward,
   )
   let band = risk_band(result.risk_score())
-  assert_eq(band, Low)
+  assert_eq(band, Medium)
   assert_true(result.metrics.summary().contains("transitions"))
 }

@@ -35,7 +35,7 @@ moon-data-contract/
 ├── .github/workflows/
 │   ├── ci.yml
 │   └── publish.yml
-├── lib/                  # 核心库与 61 个测试
+├── lib/                  # 核心库与 62 个测试
 └── cmd/main/             # 可执行 CLI
 ```
 
@@ -43,10 +43,10 @@ moon-data-contract/
 
 以下数字由 `scripts/verify_acceptance.ps1` 和 `moon test` 实测生成，统计 `.mbt` 扩展名并排除 `_build`、缓存和生成目录：
 
-- 生产 MoonBit 源码：**7,200 行**（验收脚本精确统计 `.mbt`，排除测试、`.mbti`、缓存和构建产物）。
-- 测试 MoonBit 源码：**1,725 行**（61 个测试文件）。
-- MoonBit 源码总量：**8,925 行**。
-- 测试结果：**96/96 通过**。
+- 有效生产 MoonBit 源码：**7,000 行**（验收脚本排除空行、注释、测试、`.mbti`、缓存和构建产物；物理生产行 7,540）。
+- 测试 MoonBit 源码：**1,971 行**（62 个测试文件）。
+- MoonBit 源码总量：**9,531 行**。
+- 测试结果：**104/104 通过**。
 - 本地工具链：`moon 0.1.20260807`，`moonc v0.10.7+bc794d341`，稳定编译器线 `0.10.7`。
 
 Benchmark 结果见 [`benchmarks/latest.md`](benchmarks/latest.md)。当前证据记录本机 Windows、wasm-gc 目标、792 次契约操作/次、四类治理 workload 和 5 次 wall-clock 样本；MoonBit 核心计时为本机实测值，不是跨机器性能承诺。刷新命令：

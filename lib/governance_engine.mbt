@@ -38,12 +38,14 @@ pub fn govern_subject(
 ) -> GovernanceResult {
   let snapshots = store.list(subject)
   let chain_report = analyze_snapshot_chain(snapshots)
+  let integrity_report = validate_snapshot_integrity(snapshots)
   let findings : Array[PolicyFinding] = []
   let plans : Array[MigrationPlan] = []
   let mut transitions = 0
   let mut automatic_migrations = 0
   let mut manual_migrations = 0
-  let mut risk_score = chain_report.issues.length() * 20
+  let mut risk_score = chain_report.issues.length() * 20 +
+    integrity_report.issues.length() * 20
 
   for i = 0; i + 1 < snapshots.length(); i = i + 1 {
     let base = snapshots[i].schema
@@ -55,13 +57,35 @@ pub fn govern_subject(
     transitions = transitions + 1
     automatic_migrations = automatic_migrations + plan.automatic_action_count()
     manual_migrations = manual_migrations + plan.manual_action_count()
+    risk_score = risk_score + plan.manual_action_count() * 5
     for finding in transition_findings {
-      risk_score = risk_score + finding.risk_score
+      if finding.blocking {
+        risk_score = risk_score + 10
+      } else {
+        match finding.severity {
+          Warning => risk_score = risk_score + 2
+          _ => ()
+        }
+      }
     }
+  }
+
+  if risk_score > policy.max_risk_score {
+    findings.push({
+      rule_id: "chain-risk-budget-exceeded",
+      field_name: "~chain",
+      severity: Error,
+      blocking: true,
+      exception_applied: false,
+      risk_score: risk_score - policy.max_risk_score,
+      message: "Cumulative chain risk exceeded policy budget by " +
+      (risk_score - policy.max_risk_score).to_string(),
+    })
   }
 
   let decision = policy_decision(findings)
   let status : GovernanceStatus = if chain_report.issues.length() > 0 ||
+    integrity_report.issues.length() > 0 ||
     decision == PolicyDecision::Blocked {
     GovernanceStatus::Blocked
   } else if decision == PolicyDecision::ApprovalRequired {
@@ -90,6 +114,7 @@ pub fn govern_subject(
       },
       automatic_migrations,
       manual_migrations,
+      integrity_issue_count: integrity_report.issues.length(),
       risk_score: capped_risk(risk_score),
     },
   }

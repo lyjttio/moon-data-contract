@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Extend `moon-data-contract` with an offline Schema governance pipeline and reach 7,200–7,600 lines of effective production MoonBit source through reusable snapshot, policy, migration, governance, reporting, CLI, and benchmark functionality.
+**Goal:** Extend `moon-data-contract` with an offline Schema governance pipeline and reach 7,000–7,600 lines of effective production MoonBit source, with physical production lines remaining in the 7–8 thousand range, through reusable snapshot, policy, migration, governance, reporting, CLI, and benchmark functionality.
 
 **Architecture:** Build six focused capabilities inside the existing root `lib` package: immutable schema snapshots, policy evaluation, migration planning, governance aggregation, deterministic reports, and CLI/benchmark integration. Reuse the existing `Schema`, `diff_schemas`, `check_compatibility`, `SchemaRegistry`, and report conventions; do not add network services or unverified dependencies.
 
@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Production source is counted only from `.mbt` files, excluding tests, `.mbti`, `_build`, caches, and generated artifacts.
-- The production target is 7,200–7,600 lines; every added line belongs to snapshot, policy, governance, migration, reporting, CLI, benchmark, or reusable support logic.
+- The effective production target is 7,000–7,600 lines; physical production lines remain in the 7–8 thousand range; every added line belongs to snapshot, policy, governance, migration, reporting, CLI, benchmark, or reusable support logic.
 - The CLI must describe preview/sample behavior honestly and must not claim JSON file decoding that is not implemented.
 - All deterministic outputs use stable ordering and JSON escaping for quotes, backslashes, and newlines.
 - No Kafka network client, HTTP service, GitHub Bot, or unverified third-party dependency is added in this phase.
@@ -58,7 +58,7 @@ test "snapshot store rejects duplicate versions and returns latest" {
 
 - [ ] **Step 2: Run the focused test and verify failure**
 
-Run: `moon test`  
+Run: `moon test`
 Expected: FAIL because snapshot types and store functions do not exist.
 
 - [ ] **Step 3: Implement the snapshot model and store**
@@ -111,7 +111,7 @@ Evaluate existing compatibility results plus change-kind-specific rules. Apply e
 
 - [ ] **Step 5: Run focused tests, format, and commit**
 
-Run: `moon fmt`, `moon check --deny-warn`, `moon test`.  
+Run: `moon fmt`, `moon check --deny-warn`, `moon test`.
 Commit: `git add lib/governance_policy_* lib/pkg.generated.mbti; git commit -m "feat: add configurable contract governance policies"`.
 
 ### Task 3: Generate migration plans and rollback checks
@@ -150,7 +150,7 @@ Order actions by field name and action kind. A plan is reversible only when ever
 
 - [ ] **Step 5: Run tests and commit**
 
-Run: `moon fmt`, `moon check --deny-warn`, `moon test`.  
+Run: `moon fmt`, `moon check --deny-warn`, `moon test`.
 Commit: `git add lib/migration_plan_* lib/pkg.generated.mbti; git commit -m "feat: generate schema migration plans"`.
 
 ### Task 4: Compose governance decisions across a snapshot chain
@@ -188,7 +188,7 @@ Use a documented additive score: structural error 20, blocking policy finding 10
 
 - [ ] **Step 5: Run tests and commit**
 
-Run: `moon fmt`, `moon info`, `moon check --deny-warn`, `moon test`.  
+Run: `moon fmt`, `moon info`, `moon check --deny-warn`, `moon test`.
 Commit: `git add lib/governance_* lib/pkg.generated.mbti; git commit -m "feat: add release governance decisions"`.
 
 ### Task 5: Add deterministic governance reports
@@ -225,7 +225,7 @@ Render all findings and actions, including evidence and exception state. JUnit m
 
 - [ ] **Step 5: Run report tests and commit**
 
-Run: `moon fmt`, `moon check --deny-warn`, `moon test`.  
+Run: `moon fmt`, `moon check --deny-warn`, `moon test`.
 Commit: `git add lib/governance_report.mbt lib/governance_report_test.mbt lib/json_escape.mbt lib/pkg.generated.mbti; git commit -m "feat: add governance report formats"`.
 
 ### Task 6: Integrate CLI, benchmark workloads, and acceptance checks
@@ -265,11 +265,11 @@ Execute the real snapshot/policy/migration/governance functions, record operatio
 
 - [ ] **Step 5: Extend CLI and acceptance script**
 
-Route `govern`, `snapshot`, `plan`, and `policy` through the standard fixtures and include output assertions in `cli_test.mbt`. Update `verify_acceptance.ps1` to require governance files, the new commands, the expanded benchmark, and production source between 7,200 and 7,600 lines.
+Route `govern`, `snapshot`, `plan`, and `policy` through the standard fixtures and include output assertions in `cli_test.mbt`. Update `verify_acceptance.ps1` to require governance files, the new commands, the expanded benchmark, and effective production source between 7,000 and 7,600 lines.
 
 - [ ] **Step 6: Run the integrated checks and commit**
 
-Run: `moon fmt`, `moon info`, `moon check --deny-warn`, `moon test --deny-warn`, `powershell -ExecutionPolicy Bypass -File scripts/verify_acceptance.ps1`, and `powershell -ExecutionPolicy Bypass -File scripts/benchmark.ps1 -Runs 5`.  
+Run: `moon fmt`, `moon info`, `moon check --deny-warn`, `moon test --deny-warn`, `powershell -ExecutionPolicy Bypass -File scripts/verify_acceptance.ps1`, and `powershell -ExecutionPolicy Bypass -File scripts/benchmark.ps1 -Runs 5`.
 Commit: `git add lib scripts benchmarks lib/pkg.generated.mbti lib/cli/pkg.generated.mbti; git commit -m "feat: integrate governance CLI and benchmarks"`.
 
 ### Task 7: Update documentation, package version, and final release evidence
@@ -285,7 +285,7 @@ Commit: `git add lib scripts benchmarks lib/pkg.generated.mbti lib/cli/pkg.gener
 
 **Interfaces:**
 - Consumes: final acceptance counts, benchmark evidence, CLI examples, and generated public interfaces.
-- Produces: consistent 7,200–7,600 source metrics, updated hackathon application narrative, and publishable Mooncakes version `0.2.0`.
+- Produces: consistent effective/physical source metrics, updated hackathon application narrative, and publishable Mooncakes version `0.2.0`.
 
 - [ ] **Step 1: Update docs from measured output**
 

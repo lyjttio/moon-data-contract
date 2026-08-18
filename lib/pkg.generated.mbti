@@ -17,6 +17,8 @@ pub fn audit_contract(Schema, Schema, Map[String, FieldValue], CompatibilityLeve
 
 pub fn batch_compare_schemas(Array[Schema], Array[Schema]) -> Array[BatchCompareResult]
 
+pub fn benchmark_governance_policy() -> GovernancePolicy
+
 pub fn benchmark_governance_snapshots() -> Array[SchemaSnapshot]
 
 pub fn benchmark_governance_store() -> SnapshotStore
@@ -158,6 +160,8 @@ pub fn release_gate_summary(ReleaseGate) -> String
 pub fn render_governance_result(GovernanceResult, GovernanceReportFormat) -> String
 
 pub fn render_migration_batch(Array[MigrationPlan]) -> String
+
+pub fn replay_governance(SnapshotStore, GovernanceReplayRequest) -> GovernanceReplay
 
 pub fn risk_band(Int) -> RiskBand
 
@@ -513,6 +517,7 @@ pub(all) struct GovernanceMetrics {
   blocking_count : Int
   automatic_migrations : Int
   manual_migrations : Int
+  integrity_issue_count : Int
   risk_score : Int
 } derive(Eq, @debug.Debug)
 pub fn GovernanceMetrics::risk_band(Self) -> RiskBand
@@ -540,6 +545,43 @@ pub(all) struct GovernanceRecommendation {
   title : String
   action : String
   evidence : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GovernanceReplay {
+  result : GovernanceResult
+  trace : GovernanceTrace
+  checklist : ReleaseChecklist
+  recommendations : Array[GovernanceRecommendation]
+  steps : Array[GovernanceReplayStep]
+  mode : GovernanceReplayMode
+} derive(Eq, @debug.Debug)
+pub fn GovernanceReplay::failed_step_count(Self) -> Int
+pub fn GovernanceReplay::has_stage(Self, String) -> Bool
+pub fn GovernanceReplay::is_publishable(Self) -> Bool
+pub fn GovernanceReplay::mode_label(Self) -> String
+pub fn GovernanceReplay::recommendation_count(Self) -> Int
+pub fn GovernanceReplay::step_count(Self) -> Int
+pub fn GovernanceReplay::to_json(Self) -> String
+pub fn GovernanceReplay::to_markdown(Self) -> String
+
+pub(all) enum GovernanceReplayMode {
+  DryRun
+  ReleaseCandidate
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GovernanceReplayRequest {
+  subject : String
+  policy : GovernancePolicy
+  level : CompatibilityLevel
+  mode : GovernanceReplayMode
+} derive(Eq, @debug.Debug)
+pub fn GovernanceReplayRequest::new(String, GovernancePolicy, CompatibilityLevel, GovernanceReplayMode) -> Self
+
+pub(all) struct GovernanceReplayStep {
+  sequence : Int
+  stage : String
+  passed : Bool
+  detail : String
 } derive(Eq, @debug.Debug)
 
 pub(all) enum GovernanceReportFormat {

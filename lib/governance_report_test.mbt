@@ -42,9 +42,46 @@ test "blocked governance report contains JUnit failure" {
 }
 
 ///|
+test "JUnit report escapes XML field names and preserves Unicode" {
+  let base = snapshot_fixture("1.0.0")
+  let target = Schema::new("orders", "Orders", "1.1.0", "fixture", [
+    base.fields[0],
+    Field::new("a<&🤣", Primitive(TString)),
+  ])
+  let junit = govern_subject(
+    governance_store(target),
+    "orders",
+    GovernancePolicy::strict(),
+    CompatibilityLevel::Backward,
+  ).to_junit()
+  assert_true(junit.contains("a&lt;&amp;🤣"))
+}
+
+///|
 test "JSON escaping protects quotes backslashes and newlines" {
   assert_eq(
     json_escape("quote\" slash\\ line\nnext\rtab\t"),
     "quote\\\" slash\\\\ line\\nnext\\rtab\\t",
   )
+  assert_eq(json_escape("unicode 🤣"), "unicode 🤣")
+  assert_eq(
+    json_escape("control\b\u{0B}\u{0C}\u{00}"),
+    "control\\b\\u000b\\f\\u0000",
+  )
+}
+
+///|
+test "governance JSON preserves finding evidence and migration actions" {
+  let result = govern_subject(
+    benchmark_governance_store(),
+    "orders",
+    GovernancePolicy::strict(),
+    CompatibilityLevel::Backward,
+  )
+  let json = result.to_json()
+  assert_true(json.contains("Field 'region'"))
+  assert_true(json.contains("risk_score"))
+  assert_true(json.contains("exception_applied"))
+  assert_true(json.contains("migration_plans"))
+  assert_true(json.contains("add_required_field"))
 }

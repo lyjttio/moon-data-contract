@@ -91,15 +91,18 @@ fn benchmark_governance_schema(
 pub fn benchmark_governance_snapshots() -> Array[SchemaSnapshot] {
   let id = Field::new("id", Primitive(TInt), primary_key=true)
   let customer = Field::new("customer", Primitive(TString), required=true)
-  let amount = Field::new("amount", Primitive(TDouble), required=false)
+  let amount_int = Field::new("amount", Primitive(TInt), required=false)
+  let amount_double = Field::new("amount", Primitive(TDouble), required=false)
   let currency = Field::new("currency", Primitive(TString), required=false)
   let v1 = benchmark_governance_schema("1.0.0", [id, customer])
-  let v2 = benchmark_governance_schema("1.1.0", [id, customer, amount])
-  let v3 = benchmark_governance_schema("1.2.0", [id, customer, amount, currency])
+  let v2 = benchmark_governance_schema("1.1.0", [id, customer, amount_int])
+  let v3 = benchmark_governance_schema("1.2.0", [
+    id, customer, amount_double, currency,
+  ])
   let v4 = benchmark_governance_schema("2.0.0", [
     id,
     customer,
-    amount,
+    amount_double,
     currency,
     Field::new("region", Primitive(TString)),
   ])
@@ -129,6 +132,22 @@ pub fn benchmark_governance_snapshots() -> Array[SchemaSnapshot] {
       created_at="2026-08-18T00:03:00Z",
     ),
   ]
+}
+
+///|
+pub fn benchmark_governance_policy() -> GovernancePolicy {
+  GovernancePolicy::strict()
+  .with_max_risk_score(40)
+  .with_exception(
+    PolicyException::new(
+      "orders", "amount", "type-changed", "analytics consumers support the widening rehearsal",
+    ),
+  )
+  .with_exception(
+    PolicyException::new(
+      "orders", "region", "required-field-added", "region backfill is completed before release",
+    ),
+  )
 }
 
 ///|

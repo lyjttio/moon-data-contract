@@ -6,7 +6,14 @@ test "governance delta identifies risk and finding changes" {
   ])
   let first_store = SnapshotStore::new()
   ignore(
-    first_store.insert(SchemaSnapshot::new("orders", base, source="delta")),
+    first_store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        base,
+        source="delta",
+        created_at="2026-08-18T00:00:00Z",
+      ),
+    ),
   )
   let first = govern_subject(
     first_store,
@@ -16,10 +23,24 @@ test "governance delta identifies risk and finding changes" {
   )
   let second_store = SnapshotStore::new()
   ignore(
-    second_store.insert(SchemaSnapshot::new("orders", base, source="delta")),
+    second_store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        base,
+        source="delta",
+        created_at="2026-08-18T00:00:00Z",
+      ),
+    ),
   )
   ignore(
-    second_store.insert(SchemaSnapshot::new("orders", optional, source="delta")),
+    second_store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        optional,
+        source="delta",
+        created_at="2026-08-18T00:01:00Z",
+      ),
+    ),
   )
   let second = govern_subject(
     second_store,

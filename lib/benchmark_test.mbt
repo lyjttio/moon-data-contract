@@ -60,3 +60,15 @@ test "governance benchmark workloads execute real pipeline paths" {
     assert_eq(measurement.invalid_count, 0)
   }
 }
+
+///|
+test "governance benchmark fixture includes widening and an exception profile" {
+  let snapshots = benchmark_governance_snapshots()
+  assert_eq(snapshots.length(), 4)
+  match snapshots[2].schema.fields[2].field_type {
+    Primitive(TDouble) => assert_true(true)
+    _ => assert_true(false)
+  }
+  let policy = benchmark_governance_policy()
+  assert_true(policy.exceptions.length() >= 2)
+}

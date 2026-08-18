@@ -5,8 +5,14 @@ fn governance_store(target : Schema) -> SnapshotStore {
     "orders",
     snapshot_fixture("1.0.0"),
     source="fixture",
+    created_at="2026-08-18T00:00:00Z",
   )
-  let next = SchemaSnapshot::new("orders", target, source="fixture")
+  let next = SchemaSnapshot::new(
+    "orders",
+    target,
+    source="fixture",
+    created_at="2026-08-18T00:01:00Z",
+  )
   ignore(store.insert(base))
   ignore(store.insert(next))
   store
@@ -83,4 +89,88 @@ test "governance result is deterministic for repeated evaluation" {
     CompatibilityLevel::Backward,
   )
   assert_eq(first, second)
+}
+
+///|
+test "governance blocks metadata integrity failures and reports their count" {
+  let store = SnapshotStore::new()
+  ignore(
+    store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        Schema::new("payments", "Payments", "1.0.0", "", []),
+        source="fixture",
+        created_at="2026-08-18T00:00:00Z",
+      ),
+    ),
+  )
+  let result = govern_subject(
+    store,
+    "orders",
+    GovernancePolicy::strict(),
+    CompatibilityLevel::Backward,
+  )
+  assert_eq(result.status, GovernanceStatus::Blocked)
+  assert_true(result.metrics.integrity_issue_count >= 2)
+}
+
+///|
+test "governance applies the risk budget across the complete snapshot chain" {
+  let store = SnapshotStore::new()
+  let base = Schema::new("orders", "Orders", "1.0.0", "fixture", [
+    Field::new("id", Primitive(TInt), primary_key=true),
+  ])
+  let first = Schema::new("orders", "Orders", "1.1.0", "fixture", [
+    base.fields[0],
+    Field::new("account", Primitive(TString)),
+  ])
+  let second = Schema::new("orders", "Orders", "1.2.0", "fixture", [
+    first.fields[0],
+    first.fields[1],
+    Field::new("region", Primitive(TString)),
+  ])
+  ignore(
+    store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        base,
+        source="fixture",
+        created_at="2026-08-18T00:00:00Z",
+      ),
+    ),
+  )
+  ignore(
+    store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        first,
+        source="fixture",
+        created_at="2026-08-18T00:01:00Z",
+      ),
+    ),
+  )
+  ignore(
+    store.insert(
+      SchemaSnapshot::new(
+        "orders",
+        second,
+        source="fixture",
+        created_at="2026-08-18T00:02:00Z",
+      ),
+    ),
+  )
+  let result = govern_subject(
+    store,
+    "orders",
+    GovernancePolicy::strict().with_max_risk_score(10),
+    CompatibilityLevel::Backward,
+  )
+  assert_eq(result.status, GovernanceStatus::Blocked)
+  let mut has_chain_budget = false
+  for finding in result.findings {
+    if finding.rule_id == "chain-risk-budget-exceeded" {
+      has_chain_budget = true
+    }
+  }
+  assert_true(has_chain_budget)
 }

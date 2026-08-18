@@ -75,8 +75,8 @@
 
 ## 2026-08-18 扩展结项证据
 
-- 治理扩展已提交到本地 `189904c`：生产 `.mbt` 精确 7,200 行，测试源码 1,725 行，总量 8,925 行，测试文件 61 个。
-- `moon test --deny-warn`：96/96；`moon check --deny-warn`、`moon fmt --check`、`moon info` 和 `moon check --deny-warn --target all` 通过。
-- `moon test --deny-warn --target all` 的 wasm、wasm-gc、js 均 96/96；Windows 本机 native 仍因 MinGW runtime 缺少 `rand_s` 失败，CI 的 Ubuntu native job 保持覆盖。
-- `scripts/verify_acceptance.ps1` 完整通过，输出 `production=7200 test=1725 total=8925 test_files=61`；`scripts/benchmark.ps1 -Runs 5` 通过，记录 792 operations/run、四个治理 workload 和 5 次 wall-clock 样本。
+- 治理扩展已提交到本地 `189904c`，后续审查修复尚未提交：有效生产 `.mbt` 7,020 行，物理生产行 7,560，测试源码 1,971 行，总物理行 9,531，测试文件 62 个。
+- `moon test --deny-warn`：104/104；`moon check --deny-warn`、`moon fmt --check`、`moon info` 和 `moon check --deny-warn --target all` 通过。
+- `moon test --deny-warn --target all` 的 wasm、wasm-gc、js 均 104/104；Windows 本机 native 仍因 MinGW runtime 缺少 `rand_s` 失败，CI 的 Ubuntu native job 保持覆盖。
+- `scripts/verify_acceptance.ps1` 已改为有效行口径；`scripts/benchmark.ps1 -Runs 5` 通过，记录 792 operations/run、四个治理 workload 和 5 次 wall-clock 样本。
 - `moon update` 提升权限后成功更新 registry index 与 symbols；`moon.mod` 已升级到 `0.2.0`，CLI version 输出同步为 `0.2.0`。

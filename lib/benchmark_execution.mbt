@@ -31,21 +31,32 @@ pub fn run_workload(workload : BenchmarkWorkload) -> BenchmarkMeasurement {
       }
       BenchmarkOperation::SnapshotChainScan => {
         let report = analyze_snapshot_chain(benchmark_governance_snapshots())
-        if report.ordered_versions.length() == 4 {
+        if report.ordered_versions == ["1.0.0", "1.1.0", "1.2.0", "2.0.0"] &&
+          report.issues.length() == 0 {
           valid_count += 1
         } else {
           invalid_count += 1
         }
       }
       BenchmarkOperation::PolicyEvaluation => {
+        let snapshots = benchmark_governance_snapshots()
         let findings = evaluate_policy(
-          GovernancePolicy::strict(),
-          workload.schema,
-          workload.next_schema,
+          benchmark_governance_policy(),
+          snapshots[1].schema,
+          snapshots[2].schema,
           CompatibilityLevel::Backward,
         )
-        if findings.length() == 1 &&
-          findings[0].rule_id == "optional-field-added" {
+        let mut has_type_exception = false
+        let mut has_optional_addition = false
+        for finding in findings {
+          if finding.rule_id == "type-changed" && finding.exception_applied {
+            has_type_exception = true
+          }
+          if finding.rule_id == "optional-field-added" {
+            has_optional_addition = true
+          }
+        }
+        if findings.length() == 2 && has_type_exception && has_optional_addition {
           valid_count += 1
         } else {
           invalid_count += 1
@@ -54,7 +65,9 @@ pub fn run_workload(workload : BenchmarkWorkload) -> BenchmarkMeasurement {
       BenchmarkOperation::MigrationPlanning => {
         let plan = plan_schema_migration(workload.schema, workload.next_schema)
         if plan.base_version == workload.schema.version &&
-          plan.target_version == workload.next_schema.version {
+          plan.target_version == workload.next_schema.version &&
+          plan.actions.length() == 1 &&
+          plan.actions[0].kind == MigrationActionKind::AddOptionalField {
           valid_count += 1
         } else {
           invalid_count += 1
@@ -64,11 +77,15 @@ pub fn run_workload(workload : BenchmarkWorkload) -> BenchmarkMeasurement {
         let result = govern_subject(
           benchmark_governance_store(),
           "orders",
-          GovernancePolicy::strict(),
+          benchmark_governance_policy(),
           CompatibilityLevel::Backward,
         )
-        let report = result.to_markdown()
-        if report.contains("Contract Governance Report") {
+        let markdown = result.to_markdown()
+        let json = result.to_json()
+        if markdown.contains("Contract Governance Report") &&
+          markdown.contains("Migration plans") &&
+          json.contains("migration_plans") &&
+          json.contains("risk_score") {
           valid_count += 1
         } else {
           invalid_count += 1
